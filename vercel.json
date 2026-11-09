@@ -16,6 +16,8 @@
     { "source": "/resources/tools/:slug", "destination": "/resources/tool.html" },
     { "source": "/tools/qr-generator", "destination": "/ops/social/index.html" },
     { "source": "/tools/fear-greed", "destination": "/tools/fear-greed/index.html" },
-    { "source": "/tools/fear-greed/", "destination": "/tools/fear-greed/index.html" }
+    { "source": "/tools/fear-greed/", "destination": "/tools/fear-greed/index.html" },
+    { "source": "/code-of-conduct", "destination": "/policies/code-of-conduct.html" },
+    { "source": "/programs/stellar-chile/ambassadors", "destination": "/policies/ambassadors.html" }
   ]
 }
