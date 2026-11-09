@@ -1,20 +1,11 @@
 {
-  "redirects": [
-    { "source": "/tierly", "destination": "https://www.tirly.xyz", "permanent": true },
-    { "source": "/tierly/", "destination": "https://www.tirly.xyz", "permanent": true },
-    { "source": "/tierly/admin", "destination": "https://www.tirly.xyz/admin", "permanent": true },
-    { "source": "/tierly/admin/", "destination": "https://www.tirly.xyz/admin", "permanent": true },
-    { "source": "/admin/event", "destination": "https://www.tirly.xyz/admin", "permanent": true },
-    { "source": "/admin/event/", "destination": "https://www.tirly.xyz/admin", "permanent": true }
-  ],
   "rewrites": [
-    { "source": "/ops/merch", "destination": "/ops/merch/index.html" },
-    { "source": "/ops/merch/", "destination": "/ops/merch/index.html" },
     { "source": "/brand", "destination": "/brand.html" },
     { "source": "/hub", "destination": "/hub/index.html" },
     { "source": "/resources", "destination": "/resources/index.html" },
     { "source": "/resources/tools/:slug", "destination": "/resources/tool.html" },
-    { "source": "/tools/qr-generator", "destination": "/ops/social/index.html" },
+    { "source": "/tools/qr-generator", "destination": "/tools/qr-generator/index.html" },
+    { "source": "/tools/qr-generator/", "destination": "/tools/qr-generator/index.html" },
     { "source": "/tools/fear-greed", "destination": "/tools/fear-greed/index.html" },
     { "source": "/tools/fear-greed/", "destination": "/tools/fear-greed/index.html" },
     { "source": "/code-of-conduct", "destination": "/policies/code-of-conduct.html" },

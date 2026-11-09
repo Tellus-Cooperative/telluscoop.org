@@ -11,7 +11,7 @@ npm test       # node --test tests/*.test.mjs
 
 There is no bundler, TypeScript, or lint step. The site deploys to Vercel (telluscoop.org) as static files plus one serverless function.
 
-## Two applications in one repo
+## The site
 
 ### 1. Public marketing site (`index.html`)
 
@@ -46,14 +46,12 @@ A no-bundler browser prototype. React 18 and Babel are loaded from CDN; JSX file
 
 **Fonts**: Fraunces (`--serif`), Inter (`--sans`), JetBrains Mono (`--mono`), from Google Fonts.
 
-### 2. Stellar Ops dashboard (`ops/stellar/`)
+### 2. Policy pages and tools
 
-Private compliance dashboard for the Chile Stellar Ambassador Program SOW. Completely separate stack from the marketing site: **vanilla JS** (`app.js`, one IIFE, no React) + Supabase (`supabase-js` UMD from CDN). See `ops/stellar/README.md` for the auth flow, master admin list, and Luma integration.
-
-- `/ops/stellar/?preview=1` shows a labeled contract preview without auth; `/ops/stellar/` uses live Supabase Auth and data.
-- `config.js` holds the Supabase URL and **publishable** key — intentionally public; all authorization is enforced by RLS.
-- **Cache busting**: `app.js` and `styles.css` are referenced with `?v=YYYYMMDD-NN` in `ops/stellar/index.html`. Bump BOTH on every change — `tests/stellar-ops.test.mjs` fails if the two versions differ.
-- Tests are static assertions (regex against `app.js`/`index.html` source), not runtime tests.
+- `policies/` — static Código de Conducta and Embajadores Stellar Chile pages (ES at `/code-of-conduct`, `/programs/stellar-chile/ambassadors`; EN under `/en/...`). Shared `policy.css`/`policy.js`; the footer is identical across pages of the same language. Tests: `tests/policies.test.mjs`.
+- `tools/qr-generator/` — standalone public QR generator served at `/tools/qr-generator` (no backend, no login). Tests: `tests/qr-generator.test.mjs`.
+- `tools/fear-greed/` — Fear & Greed tool at `/tools/fear-greed`.
+- The former `/ops/*` dashboards and `/tierly` were removed from the site; Tierly lives at tirly.xyz.
 
 ### Supabase backend (`supabase/`)
 
@@ -65,4 +63,3 @@ Private compliance dashboard for the Chile Stellar Ambassador Program SOW. Compl
 ## Secrets
 
 - Never put a Supabase service-role key or the Luma API key in frontend code, `config.js`, `.env.local`, or Git. `LUMA_API_KEY` lives only in Supabase Edge Function secrets.
-- The Supabase publishable key in `ops/stellar/config.js` is public by design.
