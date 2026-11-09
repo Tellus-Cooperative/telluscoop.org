@@ -9,19 +9,28 @@ const PAGES = {
   '/programs/stellar-chile/ambassadors': 'policies/ambassadors.html',
 };
 
+const EN_PAGES = {
+  '/en/code-of-conduct': 'policies/en/code-of-conduct.html',
+  '/en/programs/stellar-chile/ambassadors': 'policies/en/ambassadors.html',
+};
+
+const ALL = { ...PAGES, ...EN_PAGES };
+const langOf = (slug) => (slug.startsWith('/en/') ? 'en' : 'es');
+const twin = (slug) => (langOf(slug) === 'en' ? slug.slice(3) : `/en${slug}`);
+
 test('vercel.json rewrites English slugs to policy pages', () => {
   const { rewrites } = JSON.parse(read('vercel.json'));
-  for (const [source, file] of Object.entries(PAGES)) {
+  for (const [source, file] of Object.entries(ALL)) {
     const rule = rewrites.find((r) => r.source === source);
     assert.ok(rule, `missing rewrite for ${source}`);
     assert.equal(rule.destination, `/${file}`);
   }
 });
 
-for (const file of Object.values(PAGES)) {
-  test(`${file} is a Spanish policy page with absolute asset paths`, () => {
+for (const [slug, file] of Object.entries(ALL)) {
+  test(`${file} declares its language and uses absolute asset paths`, () => {
     const html = read(file);
-    assert.match(html, /<html lang="es">/);
+    assert.match(html, new RegExp(`<html lang="${langOf(slug)}">`));
     assert.match(html, /href="\/policies\/policy\.css"/);
     assert.match(html, /src="\/policies\/policy\.js"/);
     // Relative asset paths break under the nested rewrite URL
@@ -79,9 +88,34 @@ test('each page has its own 1200x630 share image', () => {
   }
 });
 
-test('both pages share an identical footer', () => {
+test('pages of the same language share an identical footer', () => {
   const footer = (f) => read(f).match(/<footer[\s\S]*<\/footer>/)[0];
-  assert.equal(footer(PAGES['/code-of-conduct']), footer(PAGES['/programs/stellar-chile/ambassadors']));
+  for (const group of [PAGES, EN_PAGES]) {
+    const [a, b] = Object.values(group);
+    assert.equal(footer(a), footer(b));
+  }
+  assert.doesNotMatch(read('policies/policy.css'), /pol-planet/);
+});
+
+test('language toggle points to the twin page and marks the current one', () => {
+  for (const [slug, file] of Object.entries(ALL)) {
+    const html = read(file);
+    const toggle = html.match(/<div class="pol-langs"[\s\S]*?<\/div>/)?.[0];
+    assert.ok(toggle, `${file} toggle`);
+    assert.match(toggle, new RegExp(`href="${slug}" aria-current="true"`));
+    assert.ok(toggle.includes(`href="${twin(slug)}"`), `${file} twin link`);
+    assert.ok(html.includes(`hreflang="es" href="https://telluscoop.org${langOf(slug) === 'es' ? slug : twin(slug)}"`));
+    assert.ok(html.includes(`hreflang="en" href="https://telluscoop.org${langOf(slug) === 'en' ? slug : twin(slug)}"`));
+  }
+});
+
+test('every Stellar Passport mention on the ambassador pages links to Passport', () => {
+  for (const file of [PAGES['/programs/stellar-chile/ambassadors'], EN_PAGES['/en/programs/stellar-chile/ambassadors']]) {
+    const main = read(file).match(/<main[\s\S]*<\/main>/)[0];
+    const mentions = main.match(/Stellar Passport/g).length;
+    const links = main.match(/<a href="https:\/\/demo\.stellarpassport\.xyz\/"[^>]*>Stellar Passport<\/a>/g)?.length;
+    assert.equal(links, mentions, file);
+  }
 });
 
 test('policy CSS never uses clay or legacy teal as a text color', () => {
@@ -90,8 +124,12 @@ test('policy CSS never uses clay or legacy teal as a text color', () => {
   assert.doesNotMatch(css, /#3F8487/i);
 });
 
-test('code of conduct keeps the report-channel placeholder until a real URL exists', () => {
-  assert.match(read(PAGES['/code-of-conduct']), /\[PUBLICAR ENLACE AL CANAL DE REPORTE\]/);
+test('code of conduct links the #reportes Discord channel', () => {
+  for (const file of [PAGES['/code-of-conduct'], EN_PAGES['/en/code-of-conduct']]) {
+    const html = read(file);
+    assert.doesNotMatch(html, /\[PUBLICAR/);
+    assert.equal(html.match(/href="https:\/\/discord.gg\/qPQJkvUfsS"[^>]*>#reportes</g)?.length, 3, file);
+  }
 });
 
 test('Instagram points to telluscooperative everywhere', () => {

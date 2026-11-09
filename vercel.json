@@ -18,6 +18,8 @@
     { "source": "/tools/fear-greed", "destination": "/tools/fear-greed/index.html" },
     { "source": "/tools/fear-greed/", "destination": "/tools/fear-greed/index.html" },
     { "source": "/code-of-conduct", "destination": "/policies/code-of-conduct.html" },
-    { "source": "/programs/stellar-chile/ambassadors", "destination": "/policies/ambassadors.html" }
+    { "source": "/programs/stellar-chile/ambassadors", "destination": "/policies/ambassadors.html" },
+    { "source": "/en/code-of-conduct", "destination": "/policies/en/code-of-conduct.html" },
+    { "source": "/en/programs/stellar-chile/ambassadors", "destination": "/policies/en/ambassadors.html" }
   ]
 }
