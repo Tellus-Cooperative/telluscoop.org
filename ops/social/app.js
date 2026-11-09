@@ -311,7 +311,7 @@
       { id: "a3", platform: "x", handle: "dev_gen88926", display_name: "Dev Gen", category: "memes", active: true },
       { id: "own-x", platform: "x", handle: "telluscoop", display_name: "Tellus Cooperative", category: "tellus-own", active: true },
       { id: "own-li", platform: "linkedin", handle: "tellus-cooperative", display_name: "Tellus Cooperative", category: "tellus-own", active: true },
-      { id: "own-ig", platform: "instagram", handle: "telluscoop", display_name: "Tellus Cooperative", category: "tellus-own", active: true },
+      { id: "own-ig", platform: "instagram", handle: "telluscooperative", display_name: "Tellus Cooperative", category: "tellus-own", active: true },
     ];
     state.posts = [
       { id: "p1", account_id: "a1", platform: "x", author_handle: "midudev", content: "Ha salido Kimi K3. Se siente como un nuevo momento DeepSeek para el mundo de la IA.", url: "https://x.com/midudev/status/1", posted_at: new Date().toISOString(), likes: 4200, reposts: 610, replies: 180, views: 520000, source: "manual", tags: [] },
