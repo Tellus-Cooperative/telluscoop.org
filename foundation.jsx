@@ -92,7 +92,8 @@ const FoundationSystem = () => {
   useEffect(() => {
     const RSS = 'https://rss.beehiiv.com/feeds/NRVrKCDABF.xml';
     const CACHE_KEY = 'tellus_rss_v1';
-    const TTL = 24 * 3600 * 1000;
+    // Short freshness window so new Beehiiv posts show up within the hour.
+    const TTL = 60 * 60 * 1000;
     const proxies = [
       '',
       'https://api.allorigins.win/raw?url=',
@@ -120,12 +121,14 @@ const FoundationSystem = () => {
         const title = getText(item, 'title');
         const description = getText(item, 'description');
         const link = getText(item, 'link');
-        const date = fmtDate(getText(item, 'pubDate'));
+        const rawDate = getText(item, 'pubDate');
+        const pubTs = new Date(rawDate).getTime();
+        const date = fmtDate(rawDate);
         const cats = Array.from(item.getElementsByTagName('category')).map(c => c.textContent.trim());
         const kind = cats[0] || 'Field notes';
         const enc = item.getElementsByTagName('enclosure')[0];
         const thumbnail = enc?.getAttribute('url') || undefined;
-        return { id: i + 1, title, excerpt: description, link, date, kind, tag: tagFor(kind), thumbnail };
+        return { id: i + 1, title, excerpt: description, link, date, pubTs: isNaN(pubTs) ? null : pubTs, kind, tag: tagFor(kind), thumbnail };
       });
     };
 
@@ -133,7 +136,7 @@ const FoundationSystem = () => {
       for (const proxy of proxies) {
         try {
           const url = proxy ? proxy + encodeURIComponent(RSS) : RSS;
-          const r = await fetch(url);
+          const r = await fetch(url, { cache: 'no-store' });
           if (!r.ok) continue;
           const t = await r.text();
           if (t.includes('<item>')) return t;
@@ -142,20 +145,24 @@ const FoundationSystem = () => {
       return null;
     };
 
-    try {
-      const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
-      if (cached && Date.now() - cached.ts < TTL) {
-        setArticlesAll(cached.data);
-        return;
-      }
-    } catch {}
+    let cancelled = false;
+    let cached = null;
+    try { cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); } catch {}
+    const cacheUsable = cached && Array.isArray(cached.data) && cached.data.length;
+    // Older cache entries (before pubTs existed) are shown but always refetched.
+    const cacheFresh = cacheUsable && cached.data[0].pubTs !== undefined && Date.now() - cached.ts < TTL;
+    if (cacheUsable) setArticlesAll(cached.data);
+    if (cacheFresh) return;
 
     fetchXml().then(xml => {
-      if (!xml) return;
+      // On failure keep whatever is on screen (stale cache or placeholders).
+      if (!xml || cancelled) return;
       const mapped = parseXml(xml);
+      if (!mapped.length) return;
       setArticlesAll(mapped);
       try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: mapped })); } catch {}
     });
+    return () => { cancelled = true; };
   }, [rssKey]);
 
   useEffect(() => {
@@ -185,10 +192,22 @@ const FoundationSystem = () => {
     setMouse({ x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height });
   }, []);
 
+  const navItems = [
+    ['#programs', t('navPrograms')],
+    ['#articles', t('navArticles')],
+    ['#courses', t('navCourses')],
+    ['/hub', t('navHub')],
+    ['/resources', t('navResources')],
+    ['#about', t('navAbout')],
+  ];
+  const YT_PLAYLISTS = 'https://www.youtube.com/@telluscoop/playlists';
+  const AMBASSADORS_URL = lang === 'en' ? '/en/programs/stellar-chile/ambassadors' : '/programs/stellar-chile/ambassadors';
+  const COC_URL = lang === 'en' ? '/en/code-of-conduct' : '/code-of-conduct';
+
   const programs = [
-    { code: '01', title: t('prog1Title'), body: t('prog1Body'), stat: 4548, statSuffix: '+', statLabel: t('prog1StatLabel'), img: 'uploads/cooperative education.jpg' },
-    { code: '02', title: t('prog2Title'), body: t('prog2Body'), stat: 209, statSuffix: '+', statLabel: t('prog2StatLabel'), img: 'uploads/project incubation.jpg' },
-    { code: '03', title: t('prog3Title'), body: t('prog3Body'), stat: 191, statSuffix: '+', statLabel: t('prog3StatLabel'), img: 'uploads/public research.jpg' },
+    { code: '01', title: t('prog1Title'), body: t('prog1Body'), stat: 4548, statSuffix: '+', statLabel: t('prog1StatLabel'), img: 'uploads/cooperative education.jpg', href: YT_PLAYLISTS, external: true },
+    { code: '02', title: t('prog2Title'), body: t('prog2Body'), stat: 209, statSuffix: '+', statLabel: t('prog2StatLabel'), img: 'uploads/project incubation.jpg', href: AMBASSADORS_URL },
+    { code: '03', title: t('prog3Title'), body: t('prog3Body'), stat: 191, statSuffix: '+', statLabel: t('prog3StatLabel'), img: 'uploads/public research.jpg', href: '/resources' },
   ];
 
   const [articlesAll, setArticlesAll] = useState([
@@ -202,6 +221,13 @@ const FoundationSystem = () => {
   const PER_PAGE = 6;
   const totalPages = Math.max(1, Math.ceil(articles.length / PER_PAGE));
   const pageArticles = articles.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  // "New" = published within the last 14 days (pubTs comes from the RSS pubDate).
+  const NEW_WINDOW_MS = 14 * 24 * 3600 * 1000;
+  const isNewArticle = (a) => typeof a.pubTs === 'number' && Date.now() - a.pubTs < NEW_WINDOW_MS;
+  const DATE_LOCALES = { en: 'en-US', es: 'es-CL', pt: 'pt-BR' };
+  const articleDate = (a) => a.pubTs
+    ? new Date(a.pubTs).toLocaleDateString(DATE_LOCALES[lang] || 'en-US', { day: '2-digit', month: 'short', year: 'numeric' })
+    : a.date;
 
   const partners = [
     { name: 'Stellar Foundation', logo: 'uploads/Stellar.svg' },
@@ -230,12 +256,12 @@ const FoundationSystem = () => {
       {/* NAV */}
       <nav className={`fs-nav ${navScrolled ? 'is-scrolled' : ''}`}>
         <div className="fs-nav-inner">
-          <a className="fs-mark" href="#" aria-label="Tellus Cooperative home">
+          <a className="fs-mark" href="/" aria-label="Tellus Cooperative home">
             <img src="uploads/tellus.svg" alt="Tellus Cooperative" className="fs-mark-img" />
           </a>
           <div className="fs-nav-links">
-            {[['programs', t('navPrograms')], ['articles', t('navArticles')], ['courses', t('navCourses')], ['about', t('navAbout')]].map(([id, label]) => (
-              <a key={id} href={`#${id}`}>
+            {navItems.map(([href, label]) => (
+              <a key={href} href={href}>
                 <span>{label}</span>
                 <span className="fs-nav-underline" aria-hidden="true"></span>
               </a>
@@ -255,8 +281,8 @@ const FoundationSystem = () => {
           </button>
         </div>
         <div className={`fs-nav-mobile ${mobileNavOpen ? 'is-open' : ''}`}>
-          {[['programs', t('navPrograms')], ['articles', t('navArticles')], ['courses', t('navCourses')], ['about', t('navAbout')]].map(([id, label]) => (
-            <a key={id} href={`#${id}`} onClick={() => setMobileNavOpen(false)}>{label}</a>
+          {navItems.map(([href, label]) => (
+            <a key={href} href={href} onClick={() => setMobileNavOpen(false)}>{label}</a>
           ))}
           <div className="fs-nav-mobile-lang">
             <window.LangSwitcher lang={lang} setLang={(l) => { setLang(l); setMobileNavOpen(false); }} />
@@ -277,7 +303,7 @@ const FoundationSystem = () => {
             </Reveal>
             <h1 className="fs-h1">
               <Reveal delay={50} as="span" className="fs-h1-line">{t('heroLine1')}</Reveal>
-              <Reveal delay={250} as="span" className="fs-h1-line"><em>{t('heroLine2')}</em></Reveal>
+              <Reveal delay={250} as="span" className="fs-h1-line"><em>{t('heroLine2').replace(/\.$/, '')}</em><span className="fs-h1-dot" aria-hidden="true"></span></Reveal>
             </h1>
             <Reveal delay={450}>
               <p className="fs-lede">{t('heroLede')}</p>
@@ -383,7 +409,11 @@ const FoundationSystem = () => {
                 <div className="fs-program-stat">
                   <CountStat target={p.stat} suffix={p.statSuffix} label={p.statLabel} />
                 </div>
-                <a className="fs-program-link" href="#">
+                <a
+                  className="fs-program-link"
+                  href={p.href}
+                  {...(p.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
                   <span>{t('progLearnMore')}</span>
                   <span className="fs-arrow">→</span>
                 </a>
@@ -401,7 +431,7 @@ const FoundationSystem = () => {
             <h2 className="fs-h2">{t('articlesH2')}</h2>
           </div>
           <div style={{display:'flex',alignItems:'center',gap:16}}>
-            <button className="fs-art-tab" onClick={() => { localStorage.removeItem('tellus_rss_v1'); setRssKey(k => k + 1); setTab('all'); setPage(1); }} title="Refresh articles from Beehiiv" style={{fontSize:11,padding:'6px 10px',display:'inline-flex',alignItems:'center',gap:4,border:'1px solid var(--sand-muted)',borderRadius:999,background:'transparent',color:'var(--teal-deep)',cursor:'pointer',opacity:0.55,transition:'opacity .2s'}} onMouseEnter={e => e.target.style.opacity=1} onMouseLeave={e => e.target.style.opacity=0.55}>
+            <button className="fs-art-tab" onClick={() => { localStorage.removeItem('tellus_rss_v1'); setRssKey(k => k + 1); setTab('all'); setPage(1); }} title={t('articlesRefresh')} aria-label={t('articlesRefresh')} style={{fontSize:11,padding:'6px 10px',display:'inline-flex',alignItems:'center',gap:4,border:'1px solid var(--sand-muted)',borderRadius:999,background:'transparent',color:'var(--teal-deep)',cursor:'pointer',opacity:0.55,transition:'opacity .2s'}} onMouseEnter={e => e.target.style.opacity=1} onMouseLeave={e => e.target.style.opacity=0.55}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
             </button>
             <div className="fs-articles-tabs" role="tablist">
@@ -415,29 +445,37 @@ const FoundationSystem = () => {
         </Reveal>
 
         <div className="fs-articles-grid" key={`${tab}-${page}`}>
-          {pageArticles.map((a, i) => (
-            <Reveal key={a.id} delay={i * 50}>
+          {pageArticles.map((a, i) => {
+            const isFeat = page === 1 && i === 0;
+            const isNew = isNewArticle(a);
+            return (
+            <Reveal key={a.id} delay={i * 50} className={isFeat ? 'fs-article-feat-wrap' : undefined}>
               <a
                 href={a.link || 'https://telluscoop.beehiiv.com'}
                 target={a.link ? '_blank' : undefined}
                 rel="noopener noreferrer"
-                className="fs-article fs-article-card"
+                className={`fs-article fs-article-card${isFeat ? ' fs-article--feat' : ''}${isNew ? ' is-new' : ''}`}
               >
                 <div className={`fs-article-img${a.thumbnail ? '' : ' fs-article-img--no-thumb'}`}>
                   {a.thumbnail
-                    ? <img src={a.thumbnail} alt={a.title} className="fs-article-thumb" />
+                    ? <img src={a.thumbnail} alt="" className="fs-article-thumb" loading={isFeat ? undefined : 'lazy'} />
                     : <div className="fs-article-img-placeholder"><span className="fs-article-img-initial">{a.title?.charAt(0)}</span></div>
                   }
                   <span className={`fs-article-tag fs-tag-${a.tag}`}>{a.kind}</span>
+                  {isNew && <span className="fs-article-new">{t('articlesNew')}</span>}
                 </div>
                 <div className="fs-article-body">
-                  <div className="mono fs-article-meta">{a.date}</div>
+                  <div className="mono fs-article-meta">
+                    {isFeat && <span className="fs-article-latest">{t('articlesLatest')}</span>}
+                    <time dateTime={a.pubTs ? new Date(a.pubTs).toISOString() : undefined}>{articleDate(a)}</time>
+                  </div>
                   <h3 className="fs-article-title">{a.title}</h3>
                   {a.excerpt && <p className="fs-article-excerpt">{a.excerpt}</p>}
                 </div>
               </a>
             </Reveal>
-          ))}
+            );
+          })}
         </div>
 
         {totalPages > 1 && (() => {
@@ -593,7 +631,7 @@ const FoundationSystem = () => {
         </div>
 
         <div className="fs-wall-foot">
-          <a className="fs-wall-cta" href="#field">
+          <a className="fs-wall-cta" href="https://www.instagram.com/telluscooperative/" target="_blank" rel="noopener noreferrer">
             <span>{t('wallFollow')}</span>
             <span className="fs-arrow">→</span>
           </a>
@@ -630,7 +668,7 @@ const FoundationSystem = () => {
       <footer className="fs-footer">
         <div className="fs-footer-grid">
           <div className="fs-footer-brand">
-            <a className="fs-mark">
+            <a className="fs-mark" href="/" aria-label="Tellus Cooperative home">
               <img src="uploads/tellus.svg" alt="Tellus Cooperative" className="fs-mark-img" />
             </a>
             <p>{t('footerBrand')}</p>
@@ -638,9 +676,19 @@ const FoundationSystem = () => {
           <div>
             <div className="eyebrow">{t('footerPrograms')}</div>
             <ul>
-              <li><a href="#programs">{t('footerEdu')}</a></li>
-              <li><a href="#programs">{t('footerInc')}</a></li>
-              <li><a href="#programs">{t('footerPub')}</a></li>
+              <li><a href={YT_PLAYLISTS} target="_blank" rel="noopener noreferrer">{t('footerEdu')}</a></li>
+              <li><a href={AMBASSADORS_URL}>{t('footerInc')}</a></li>
+              <li><a href="/resources">{t('footerPub')}</a></li>
+            </ul>
+          </div>
+          <div>
+            <div className="eyebrow">{t('footerCoop')}</div>
+            <ul>
+              <li><a href="/hub">{t('footerHub')}</a></li>
+              <li><a href="/resources">{t('footerResources')}</a></li>
+              <li><a href="/tools/qr-generator">{t('footerQr')}</a></li>
+              <li><a href={COC_URL}>{t('footerCoc')}</a></li>
+              <li><a href="/brand">{t('footerBrandGuide')}</a></li>
             </ul>
           </div>
           <div>
@@ -664,7 +712,7 @@ const FoundationSystem = () => {
         </div>
         <div className="fs-footer-base">
           <span>{t('footerCopyright')}</span>
-          <a href="/brand" rel="noopener noreferrer" style={{fontSize:11,opacity:0.55,fontFamily:'var(--mono)',letterSpacing:'0.05em',textDecoration:'none',color:'var(--teal-deep)'}}>Brand Guide</a>
+          <a href={COC_URL} className="fs-footer-base-link">{t('footerCoc')}</a>
         </div>
       </footer>
 
