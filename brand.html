@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>(function(){var t;try{t=localStorage.getItem('tellus-theme')}catch(e){}if(t!=='dark'&&t!=='light')t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})()</script>
   <title>Brand Guide · Tellus Cooperative Foundation</title>
   <meta name="description" content="Official brand assets, color palette, contrast guide, and usage policy for Tellus Cooperative Foundation." />
   <meta name="robots" content="index, follow" />
@@ -12,6 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
+  <link rel="stylesheet" href="/theme.css" />
   <style>
     :root {
       --sand: #ECE0CC;
@@ -167,15 +169,59 @@
       border-top: 1px solid var(--sand-muted); padding: 48px; text-align: center;
       font-size: 13px; color: var(--teal-deep); opacity: 0.65;
     }
-    .bn-footer a { color: var(--teal); text-decoration: none; transition: color 180ms; }
+    .bn-footer a { color: var(--teal-text); text-decoration: none; transition: color 180ms; }
     .bn-footer a:hover { color: var(--clay); }
 
     .bn-back-home {
       display: inline-flex; align-items: center; gap: 8px; margin-bottom: 16px;
       font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em;
-      color: var(--teal); text-decoration: none; transition: color 180ms;
+      color: var(--teal-text); text-decoration: none; transition: color 180ms;
     }
     .bn-back-home:hover { color: var(--clay); }
+
+    .bn-nav-end { display: flex; align-items: center; gap: 24px; }
+    .bn-nav-end .theme-toggle { --tt-fg: var(--teal-ink); --tt-line: var(--sand-muted); --tt-hover: var(--sand-soft); --tt-focus: var(--teal); }
+
+    /* Dark theme (html[data-theme="dark"], set before paint by the head snippet; toggle in /theme.js) */
+    html[data-theme="dark"] {
+      --sand: #142425; --sand-soft: #1F3536; --sand-muted: rgba(236,224,204,0.14);
+      --teal-ink: #ECE0CC; --teal-deep: #ECE0CC; --teal: #7FB5B7;
+      --clay: #E8956A; --clay-deep: #F0A982;
+    }
+    html[data-theme="dark"] .bn-nav { background: rgba(20,36,37,0.88); }
+    html[data-theme="dark"] .bn-logo-card:hover { border-color: #7FB5B7; box-shadow: 0 12px 32px -16px rgba(0,0,0,0.6); }
+    html[data-theme="dark"] .bn-logo-card.is-dark { --teal-ink: #0F1D1E; border-color: rgba(236,224,204,0.14); }
+    html[data-theme="dark"] .bn-logo-card.is-dark .bn-logo-name { color: #ECE0CC; }
+    /* Specimens keep the real brand colors in both themes */
+    html[data-theme="dark"] .bn-logo-preview,
+    html[data-theme="dark"] .bn-color-swatch,
+    html[data-theme="dark"] .bn-matrix {
+      --sand: #ECE0CC; --sand-soft: #F5EDDD; --sand-muted: #D4C8B5;
+      --teal: #3F8487; --teal-deep: #2A5A5C; --teal-ink: #1F3536;
+      --clay: #C75A2A; --clay-deep: #9E441F;
+    }
+    html[data-theme="dark"] .bn-logo-preview.bg-dark { box-shadow: inset 0 0 0 1px rgba(236,224,204,0.14); }
+    html[data-theme="dark"] .bn-matrix table { background: #F5EDDD; color: #1F3536; }
+    /* AA contrast in both themes: no opacity-dimmed text, link text on --teal-text,
+       sand-on-clay buttons on clay-deep, badges with white text. */
+    :root { --teal-text: #2A5A5C; }
+    html[data-theme="dark"] { --teal-text: #7FB5B7; }
+    .bn-footer { opacity: 1; }
+    .bn-color-role { opacity: 1; }
+    .bn-logo-card p[style], .bn-section > p[style], .bn-policy p[style], .bn-matrix th span[style] { opacity: 1 !important; }
+    .bn-lede { opacity: 1; }
+    .bn-lede a { color: var(--teal-text); }
+    .bn-btn-accent { background: var(--clay-deep); border-color: var(--clay-deep); }
+    .bn-btn-accent:hover { background: var(--clay-deep); border-color: var(--clay-deep); filter: brightness(0.9); }
+    .bn-policy em { color: var(--clay-deep); }
+    .bn-badge.aa { color: #FFFFFF; }
+    .bn-badge.aa-lg { background: #B45309; }
+    .bn-badge.fail { color: #FFFFFF; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .bn-btn, .bn-logo-card, .bn-nav-links a { transition: none; }
+      .bn-btn:hover { transform: none; }
+    }
 
     @media (max-width: 960px) {
       .bn-nav-inner { padding: 12px 24px; }
@@ -201,17 +247,22 @@
 <!-- Nav -->
 <nav class="bn-nav">
   <div class="bn-nav-inner">
-    <a class="bn-nav-home" href="index.html">
-      <img src="uploads/tellus.svg" alt="Tellus Cooperative" />
+    <a class="bn-nav-home" href="/" aria-label="Tellus Cooperative — home">
+      <img class="logo-light" src="/uploads/tellus.svg" alt="" />
+      <img class="logo-dark" src="/policies/assets/tellus-sand.svg" alt="" />
       <span>Brand Guide</span>
     </a>
+    <div class="bn-nav-end">
     <div class="bn-nav-links">
+      <a href="/">Home</a>
       <a href="#logos">Logos</a>
       <a href="#hub-logos">Hub Logos</a>
       <a href="#colors">Colors</a>
       <a href="#contrast">Contrast</a>
       <a href="#guidelines">Guidelines</a>
       <a href="#policy">Policy</a>
+    </div>
+    <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode"><svg class="theme-toggle-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg><svg class="theme-toggle-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4"/></svg></button>
     </div>
   </div>
 </nav>
@@ -414,7 +465,7 @@
   <div class="bn-section-head">
     <div class="eyebrow">Accessibility</div>
     <h2 class="bn-h2">Contrast guide</h2>
-    <p class="bn-lede">Every combination below has been verified against WCAG 2.1 contrast thresholds. Follow the recommended column to guarantee readability. Reference: <a href="https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html" target="_blank" rel="noopener" style="color:var(--teal);text-decoration:underline;">WCAG 2.1 Contrast (Minimum)</a>.</p>
+    <p class="bn-lede">Every combination below has been verified against WCAG 2.1 contrast thresholds. Follow the recommended column to guarantee readability. Reference: <a href="https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html" target="_blank" rel="noopener" style="color:var(--teal-text);text-decoration:underline;">WCAG 2.1 Contrast (Minimum)</a>.</p>
   </div>
 
   <div class="bn-matrix">
@@ -451,7 +502,7 @@
         </tr>
         <tr>
           <td style="background:var(--sand);color:var(--teal-ink);">Sand<br><span style="font-size:10px;opacity:0.6;">#ECE0CC</span></td>
-          <td style="color:var(--teal);">Teal<br><span style="font-size:10px;opacity:0.6;">#3F8487</span></td>
+          <td style="color:var(--teal-text);">Teal<br><span style="font-size:10px;opacity:0.6;">#3F8487</span></td>
           <td style="font-weight:600;">3.3:1</td>
           <td><span class="bn-badge fail">FAIL</span></td>
           <td><span class="bn-badge aa-lg">OK</span></td>
@@ -556,7 +607,7 @@
 
   <div style="margin-top:32px;background:var(--sand-soft);border:1px solid var(--sand-muted);border-radius:14px;padding:32px;">
     <h3 style="font-family:var(--serif);font-size:20px;letter-spacing:-0.015em;margin-bottom:12px;">Clear space & minimum size</h3>
-    <p style="font-size:14px;line-height:1.6;margin-bottom:12px;">The logo must be surrounded by a minimum clear space equal to the height of the letter <strong style="font-family:var(--serif);font-size:18px;color:var(--teal);">T</strong> in the wordmark. No other elements (text, images, borders) may enter this zone.</p>
+    <p style="font-size:14px;line-height:1.6;margin-bottom:12px;">The logo must be surrounded by a minimum clear space equal to the height of the letter <strong style="font-family:var(--serif);font-size:18px;color:var(--teal-text);">T</strong> in the wordmark. No other elements (text, images, borders) may enter this zone.</p>
     <p style="font-size:14px;line-height:1.6;">Minimum print size: 30 mm width. Minimum digital size: 120 px width. Never scale below these thresholds.</p>
   </div>
 </section>
@@ -578,17 +629,18 @@
 
     <p><em>4. No warranty.</em> The brand assets are provided "as is" without warranty of any kind. Tellus Cooperative Foundation is not liable for any damages arising from the use of its brand assets.</p>
 
-    <p><em>5. Modifications.</em> We may update this policy at any time. The current version will always be available at <a href="https://telluscoop.org/brand" style="color:var(--teal);">telluscoop.org/brand</a>.</p>
+    <p><em>5. Modifications.</em> We may update this policy at any time. The current version will always be available at <a href="https://telluscoop.org/brand" style="color:var(--teal-text);">telluscoop.org/brand</a>.</p>
 
-    <p style="margin-top:24px;font-size:13px;color:var(--teal-deep);opacity:0.7;">Last updated: June 2026. For permissions, questions, or to report misuse, contact <a href="mailto:hola@telluscoop.org" style="color:var(--teal);">hola@telluscoop.org</a>.</p>
+    <p style="margin-top:24px;font-size:13px;color:var(--teal-deep);opacity:0.7;">Last updated: June 2026. For permissions, questions, or to report misuse, contact <a href="mailto:hola@telluscoop.org" style="color:var(--teal-text);">hola@telluscoop.org</a>.</p>
   </div>
 </section>
 
 <!-- Footer -->
 <footer class="bn-footer">
-  <a class="bn-back-home" href="index.html">← Back to telluscoop.org</a>
+  <a class="bn-back-home" href="/">← Back to telluscoop.org</a>
   <p>© 2026 Tellus Cooperative Foundation · New York, NY</p>
 </footer>
 
+<script src="/theme.js"></script>
 </body>
 </html>

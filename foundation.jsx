@@ -75,6 +75,30 @@ const FoundationSystem = () => {
   const sp = useScrollProgress();
   const heroRef = useRef(null);
   const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
+  const [theme, setTheme] = useState(() => document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+
+  // Follow the OS setting live, but only while the visitor has not picked a theme.
+  useEffect(() => {
+    const mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+    if (!mq || !mq.addEventListener) return;
+    const onChange = (e) => {
+      let stored = null;
+      try { stored = localStorage.getItem('tellus-theme'); } catch {}
+      if (stored === 'dark' || stored === 'light') return;
+      const next = e.matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      setTheme(next);
+    };
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('tellus-theme', next); } catch {}
+    setTheme(next);
+  };
 
   useEffect(() => {
     const onScroll = () => setNavScrolled(window.scrollY > 24);
@@ -165,26 +189,6 @@ const FoundationSystem = () => {
     return () => { cancelled = true; };
   }, [rssKey]);
 
-  useEffect(() => {
-    if (window.twttr?.widgets) {
-      window.twttr.widgets.load();
-    } else {
-      const s = document.createElement('script');
-      s.src = 'https://platform.twitter.com/widgets.js';
-      s.charset = 'utf-8';
-      s.async = true;
-      document.head.appendChild(s);
-    }
-    if (window.instgrm?.Embeds) {
-      window.instgrm.Embeds.process();
-    } else {
-      const s = document.createElement('script');
-      s.src = '//www.instagram.com/embed.js';
-      s.async = true;
-      s.onload = () => window.instgrm?.Embeds.process();
-      document.body.appendChild(s);
-    }
-  }, []);
 
   const onHeroMove = useCallback((e) => {
     const r = heroRef.current?.getBoundingClientRect();
@@ -257,7 +261,8 @@ const FoundationSystem = () => {
       <nav className={`fs-nav ${navScrolled ? 'is-scrolled' : ''}`}>
         <div className="fs-nav-inner">
           <a className="fs-mark" href="/" aria-label="Tellus Cooperative home">
-            <img src="uploads/tellus.svg" alt="Tellus Cooperative" className="fs-mark-img" />
+            <img src="uploads/tellus.svg" alt="Tellus Cooperative" className="fs-mark-img fs-logo-light" />
+            <img src="/policies/assets/tellus-sand.svg" alt="Tellus Cooperative" className="fs-mark-img fs-logo-dark" />
           </a>
           <div className="fs-nav-links">
             {navItems.map(([href, label]) => (
@@ -267,6 +272,7 @@ const FoundationSystem = () => {
               </a>
             ))}
             <window.LangSwitcher lang={lang} setLang={setLang} />
+            <ThemeToggle theme={theme} onToggle={toggleTheme} t={t} />
             <button className="fs-btn-pill-sm" onClick={() => setJoinOpen(true)}>
               <span>{t('navJoin')}</span>
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
@@ -286,6 +292,7 @@ const FoundationSystem = () => {
           ))}
           <div className="fs-nav-mobile-lang">
             <window.LangSwitcher lang={lang} setLang={(l) => { setLang(l); setMobileNavOpen(false); }} />
+            <ThemeToggle theme={theme} onToggle={toggleTheme} t={t} />
           </div>
           <button className="fs-btn-primary" onClick={() => { setMobileNavOpen(false); setJoinOpen(true); }}>
             <span>{t('navJoinFull')}</span>
@@ -431,7 +438,7 @@ const FoundationSystem = () => {
             <h2 className="fs-h2">{t('articlesH2')}</h2>
           </div>
           <div style={{display:'flex',alignItems:'center',gap:16}}>
-            <button className="fs-art-tab" onClick={() => { localStorage.removeItem('tellus_rss_v1'); setRssKey(k => k + 1); setTab('all'); setPage(1); }} title={t('articlesRefresh')} aria-label={t('articlesRefresh')} style={{fontSize:11,padding:'6px 10px',display:'inline-flex',alignItems:'center',gap:4,border:'1px solid var(--sand-muted)',borderRadius:999,background:'transparent',color:'var(--teal-deep)',cursor:'pointer',opacity:0.55,transition:'opacity .2s'}} onMouseEnter={e => e.target.style.opacity=1} onMouseLeave={e => e.target.style.opacity=0.55}>
+            <button className="fs-art-tab" onClick={() => { localStorage.removeItem('tellus_rss_v1'); setRssKey(k => k + 1); setTab('all'); setPage(1); }} title={t('articlesRefresh')} aria-label={t('articlesRefresh')} style={{fontSize:11,padding:'6px 10px',display:'inline-flex',alignItems:'center',gap:4,border:'1px solid var(--line-strong)',borderRadius:999,background:'transparent',color:'var(--text-2)',cursor:'pointer'}}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
             </button>
             <div className="fs-articles-tabs" role="tablist">
@@ -607,25 +614,7 @@ const FoundationSystem = () => {
             { url: 'https://twitter.com/TellusCoop/status/2016526731960553968', label: 'Hola Stellar · cursos en YouTube' },
           ].map((t, i) => (
             <Reveal key={i} delay={i * 80} className="fs-tweet-wrap">
-              <blockquote className="twitter-tweet" data-dnt="true" data-lang="es">
-                <a href={t.url}>{t.label}</a>
-              </blockquote>
-            </Reveal>
-          ))}
-          {[
-            'https://www.instagram.com/p/DL0hWBYxX8Q/?img_index=1',
-            'https://www.instagram.com/p/DJlCF_4R-qC/?img_index=2',
-          ].map((url, i) => (
-            <Reveal key={`ig-${i}`} delay={i * 80} className="fs-tweet-wrap">
-              <blockquote
-                className="instagram-media"
-                data-instgrm-captioned
-                data-instgrm-permalink={url}
-                data-instgrm-version="14"
-                style={{ background: '#FFF', border: 0, borderRadius: 3, margin: '0 auto', maxWidth: 540, width: 'calc(100% - 2px)' }}
-              >
-                <a href={url}>View post on Instagram</a>
-              </blockquote>
+              <TweetEmbed url={t.url} label={t.label} theme={theme} />
             </Reveal>
           ))}
         </div>
@@ -669,7 +658,8 @@ const FoundationSystem = () => {
         <div className="fs-footer-grid">
           <div className="fs-footer-brand">
             <a className="fs-mark" href="/" aria-label="Tellus Cooperative home">
-              <img src="uploads/tellus.svg" alt="Tellus Cooperative" className="fs-mark-img" />
+              <img src="uploads/tellus.svg" alt="Tellus Cooperative" className="fs-mark-img fs-logo-light" />
+            <img src="/policies/assets/tellus-sand.svg" alt="Tellus Cooperative" className="fs-mark-img fs-logo-dark" />
             </a>
             <p>{t('footerBrand')}</p>
           </div>
@@ -686,9 +676,17 @@ const FoundationSystem = () => {
             <ul>
               <li><a href="/hub">{t('footerHub')}</a></li>
               <li><a href="/resources">{t('footerResources')}</a></li>
-              <li><a href="/tools/qr-generator">{t('footerQr')}</a></li>
-              <li><a href={COC_URL}>{t('footerCoc')}</a></li>
+              <li><a href={AMBASSADORS_URL}>{t('footerAmbassadors')}</a></li>
+              <li><a href="/merch/">{t('footerMerch')}</a></li>
               <li><a href="/brand">{t('footerBrandGuide')}</a></li>
+              <li><a href={COC_URL}>{t('footerCoc')}</a></li>
+            </ul>
+          </div>
+          <div>
+            <div className="eyebrow">{t('footerTools')}</div>
+            <ul>
+              <li><a href="/tools/qr-generator">{t('footerQr')}</a></li>
+              <li><a href="/tools/fear-greed">{t('footerFearGreed')}</a></li>
             </ul>
           </div>
           <div>
@@ -718,6 +716,60 @@ const FoundationSystem = () => {
 
       {joinOpen && <JoinModal onClose={() => setJoinOpen(false)} />}
     </div>
+  );
+};
+
+// X/Twitter embeds are rendered imperatively so they can be re-rendered
+// with the matching theme when the visitor toggles dark mode.
+let twitterReady = null;
+const loadTwitter = () => {
+  if (twitterReady) return twitterReady;
+  twitterReady = new Promise((resolve) => {
+    if (window.twttr?.widgets?.createTweet) return resolve(window.twttr);
+    const s = document.createElement('script');
+    s.src = 'https://platform.twitter.com/widgets.js';
+    s.async = true;
+    s.charset = 'utf-8';
+    s.onload = () => (window.twttr?.ready ? window.twttr.ready(resolve) : resolve(window.twttr));
+    s.onerror = () => resolve(null);
+    document.head.appendChild(s);
+  });
+  return twitterReady;
+};
+
+const TweetEmbed = ({ url, label, theme }) => {
+  const target = useRef(null);
+  const [rendered, setRendered] = useState(false);
+  useEffect(() => {
+    const el = target.current;
+    const id = (url.match(/status\/(\d+)/) || [])[1];
+    if (!el || !id) return;
+    let cancelled = false;
+    loadTwitter().then((tw) => {
+      if (cancelled || !tw?.widgets?.createTweet) return;
+      el.innerHTML = '';
+      tw.widgets.createTweet(id, el, { theme, dnt: true, lang: 'es', align: 'center' })
+        .then((node) => { if (!cancelled && node) setRendered(true); })
+        .catch(() => {});
+    });
+    return () => { cancelled = true; };
+  }, [url, theme]);
+  return (
+    <div className="fs-tweet-embed">
+      {!rendered && <a className="fs-tweet-fallback" href={url} target="_blank" rel="noopener noreferrer">{label}</a>}
+      <div ref={target} />
+    </div>
+  );
+};
+
+const ThemeToggle = ({ theme, onToggle, t }) => {
+  const isDark = theme === 'dark';
+  const label = isDark ? t('themeToLight') : t('themeToDark');
+  return (
+    <button type="button" className="fs-theme-toggle" onClick={onToggle} aria-label={label} title={label} aria-pressed={isDark}>
+      <svg className="fs-ico-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg className="fs-ico-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    </button>
   );
 };
 
@@ -806,7 +858,7 @@ const JoinModal = ({ onClose }) => {
                 {!loading && <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
               </button>
             </form>
-            {error && <p style={{ color: 'var(--clay)', fontSize: 13, marginTop: 8 }}>{error}</p>}
+            {error && <p style={{ color: 'var(--accent-text)', fontSize: 13, marginTop: 8 }}>{error}</p>}
             <div className="fs-modal-divider"><span>{t('modalCommunityLabel')}</span></div>
             <div className="fs-modal-community">
               <a href="https://chat.whatsapp.com/FsNIUPsmNCl2YJkQi5r4p4" target="_blank" rel="noopener noreferrer" className="fs-community-btn fs-community-wa">

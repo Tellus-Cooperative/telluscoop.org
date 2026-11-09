@@ -36,6 +36,9 @@ a { color: inherit; text-decoration: none; }
 .pol-langs a { min-width: 40px; height: 30px; padding: 0 12px; display: inline-grid; place-items: center; border-radius: 999px; font-size: 13px; line-height: 1; font-weight: 600; letter-spacing: 0.04em; color: var(--teal-deep); transition: background-color 150ms, color 150ms; }
 .pol-langs a:hover { color: var(--ink); background: var(--sand); }
 .pol-langs a[aria-current="true"] { background: var(--ink); color: var(--sand); }
+.pol-tools { display: flex; align-items: center; gap: 12px; }
+.pol-tools .theme-toggle { --tt-fg: var(--teal-deep); --tt-line: var(--line); --tt-hover: var(--sand-2); --tt-focus: var(--clay-deep); background: var(--sand-2); }
+.pol-tools .theme-toggle:hover { --tt-fg: var(--ink); }
 
 /* Header */
 .pol-head .wrap { padding-top: 72px; padding-bottom: 56px; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
@@ -130,7 +133,7 @@ a { color: inherit; text-decoration: none; }
   .pol-nav-links { flex-direction: column; align-items: flex-start; gap: 8px; }
   .pol-nav-links a { padding-bottom: 4px; }
   .pol-nav .wrap { position: relative; }
-  .pol-langs { position: absolute; top: 18px; right: var(--pad); }
+  .pol-tools { position: absolute; top: 18px; right: var(--pad); gap: 8px; }
   .pol-langs a { height: 36px; min-width: 44px; }
   .pol-head .wrap { padding-top: 40px; padding-bottom: 32px; gap: 16px; }
   .pol-head h1 { font-size: 40px; line-height: 48px; }
@@ -161,4 +164,25 @@ a { color: inherit; text-decoration: none; }
   .pol-footer-bar .wrap { flex-direction: column; align-items: flex-start; gap: 4px; padding-bottom: 20px; }
 
 }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .pol-btn, .pol-langs a, .pol-social a, .pol-col a { transition: none; }
+  .pol-btn:hover { transform: none; }
+}
+
+/* Dark theme: html[data-theme="dark"] is set before first paint by the inline
+   head snippet (shared contract with the home page; toggle wiring in /theme.js). */
+html[data-theme="dark"] {
+  --sand: #142425;        /* page background */
+  --sand-2: #1F3536;      /* raised surface */
+  --line: rgba(236, 224, 204, 0.14);
+  --ink: #ECE0CC;         /* text */
+  --teal-deep: #7FB5B7;   /* secondary text, 7.0:1 on bg */
+  --clay-deep: #E8956A;   /* accent text + links, 6.8:1 on bg */
+}
+/* The footer is always dark: lift it onto the surface tone with a top rule so it
+   reads as its own band against the dark page. Re-scope the tokens it reads. */
+html[data-theme="dark"] .pol-footer { --ink: #1F3536; --sand: #ECE0CC; --sand-2: #F5EDDD; border-top: 1px solid rgba(236, 224, 204, 0.14); }
+html[data-theme="dark"] .pol-btn { background: #E8956A; color: #142425; }
+html[data-theme="dark"] .pol-btn:hover { background: #F0A982; }
+html[data-theme="dark"] .pol-langs a[aria-current="true"] { background: #ECE0CC; color: #142425; }

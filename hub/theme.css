@@ -1,0 +1,68 @@
+/* ============================================================
+   Tellus /hub — home link bar + dark theme.
+   The hub is a Next.js static export with hard-coded Tailwind colors,
+   so dark mode remaps the handful of color utilities it uses.
+   html[data-theme] is set before paint by the inline <head> snippet;
+   the toggle is wired by /theme.js (shared contract with every page).
+   ============================================================ */
+
+/* --- Home link + toggle, mounted into the hero notches by /hub/topbar.js --- */
+.hub-notch-home { position: absolute; inset: 0; z-index: 1; border-radius: 0 0 30px 0; }
+.hub-notch-home:focus-visible { outline: 2px solid #2a5a5c; outline-offset: -4px; }
+.hub-notch-tools { display: flex; align-items: center; gap: 16px; }
+.hub-notch-link { font-family: var(--font-montserrat, Montserrat), Inter, sans-serif; font-size: 16px; font-weight: 600; color: #171615; text-decoration: none; text-underline-offset: 4px; }
+.hub-notch-link:hover { text-decoration: underline; }
+.hub-notch-tools .theme-toggle { width: 36px; height: 36px; --tt-fg: #171615; --tt-line: #d4c8b5; --tt-hover: #ece0cc; --tt-focus: #2a5a5c; }
+.hub-notch-tools.is-floating { position: absolute; top: 32px; right: 32px; z-index: 40; padding: 6px 6px 6px 16px; border-radius: 999px; background: #fff; }
+@media (max-width: 767px) {
+  .hub-notch-link { display: none; } /* the logo notch is the home link on phones */
+  .hub-notch-tools { gap: 0; }
+}
+
+/* Light-mode contrast fixes: taupe (#8a7a63) is 3.2:1 on sand; white on
+   teal (#3f8487) is 4.3:1, so teal fills go a notch deeper (4.7:1). */
+.text-taupe { color: #6b5d48; }
+.bg-teal { background-color: #3b7e81; }
+.text-teal { color: #2d696c; }
+
+/* --- Dark theme --- */
+html[data-theme="dark"] .hub-notch-link { color: #ece0cc; }
+html[data-theme="dark"] .hub-notch-tools .theme-toggle { --tt-fg: #ece0cc; --tt-line: rgba(236,224,204,0.24); --tt-hover: #26403f; --tt-focus: #e8956a; }
+html[data-theme="dark"] .hub-notch-tools.is-floating { background: #1f3536; }
+html[data-theme="dark"] .hub-notch-home:focus-visible { outline-color: #e8956a; }
+/* Notch logos are forced black (brightness-0); lift them to sand on the dark notch */
+html[data-theme="dark"] header img.brightness-0 { filter: brightness(0) invert(0.9); }
+
+html[data-theme="dark"] .bg-sand { background-color: #142425; }
+html[data-theme="dark"] .bg-sand\/30 { background-color: rgba(38,64,63,0.45); }
+html[data-theme="dark"] .bg-sand\/50 { background-color: rgba(38,64,63,0.7); }
+html[data-theme="dark"] .hover\:bg-sand:hover { background-color: #26403f; }
+html[data-theme="dark"] .hover\:bg-sand\/40:hover { background-color: rgba(38,64,63,0.6); }
+html[data-theme="dark"] .bg-white { background-color: #1f3536; }
+html[data-theme="dark"] .bg-white\/90 { background-color: rgba(31,53,54,0.92); }
+html[data-theme="dark"] .hover\:bg-white:hover { background-color: #26403f; }
+html[data-theme="dark"] .bg-line { background-color: rgba(236,224,204,0.14); }
+html[data-theme="dark"] .border-line,
+html[data-theme="dark"] .border-line\/60 { border-color: rgba(236,224,204,0.14); }
+
+html[data-theme="dark"] .text-coal,
+html[data-theme="dark"] .text-\[\#171615\],
+html[data-theme="dark"] .hover\:text-coal:hover,
+html[data-theme="dark"] .group:hover .group-hover\:text-coal { color: #ece0cc; }
+html[data-theme="dark"] .text-coal\/40 { color: rgba(236,224,204,0.62); }
+html[data-theme="dark"] .text-coal\/50,
+html[data-theme="dark"] .text-coal\/60,
+html[data-theme="dark"] .group:hover .group-hover\:text-coal\/60 { color: rgba(236,224,204,0.72); }
+html[data-theme="dark"] .text-coal\/70 { color: rgba(236,224,204,0.78); }
+html[data-theme="dark"] .text-coal\/80 { color: rgba(236,224,204,0.86); }
+html[data-theme="dark"] .placeholder\:text-coal\/50::placeholder { color: rgba(236,224,204,0.62); }
+html[data-theme="dark"] .text-taupe { color: #c9b99f; }
+html[data-theme="dark"] .text-teal,
+html[data-theme="dark"] .hover\:text-teal:hover { color: #7fb5b7; }
+html[data-theme="dark"] .hover\:text-teal-deep:hover { color: #a9cfd0; }
+html[data-theme="dark"] .text-clay { color: #e8956a; }
+
+/* Partner logos are drawn for light grounds: give the marquee a light strip */
+html[data-theme="dark"] img[src^="/hub/logos/"]:not([src*="tellus-logo"]) { filter: brightness(0) invert(0.9); }
+
+@media (prefers-reduced-motion: reduce) { .theme-toggle { transition: none; } }

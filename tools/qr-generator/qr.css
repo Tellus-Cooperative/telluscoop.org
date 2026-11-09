@@ -36,3 +36,14 @@
 }
 
 [hidden] { display: none !important; }
+
+/* Dark theme (tokens flip in /policies/policy.css; these are the hard-coded whites) */
+html[data-theme="dark"] #qr-url { background: #26403F; color: var(--ink); }
+html[data-theme="dark"] #qr-url::placeholder { color: rgba(236, 224, 204, 0.72); }
+html[data-theme="dark"] .qr-empty { background: #26403F; }
+html[data-theme="dark"] .qr-btn { background: #E8956A; border-color: #E8956A; color: #142425; }
+html[data-theme="dark"] .qr-btn:hover:not(:disabled) { background: #F0A982; border-color: #F0A982; }
+html[data-theme="dark"] .qr-btn-ghost { background: transparent; color: var(--ink); border-color: rgba(236, 224, 204, 0.4); }
+html[data-theme="dark"] .qr-btn-ghost:hover:not(:disabled) { background: #E8956A; border-color: #E8956A; color: #142425; }
+/* .qr-canvas stays white on purpose: scanners need the light quiet zone */
+@media (prefers-reduced-motion: reduce) { .qr-btn { transition: none; } }
