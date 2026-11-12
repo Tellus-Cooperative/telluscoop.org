@@ -5,11 +5,17 @@
   "scripts": {
     "dev": "npx serve . --listen 8080 --no-clipboard",
     "start": "npm run dev",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "build": "esbuild home-main.jsx --bundle --minify --target=es2019 --jsx=transform --outfile=dist/home.js --log-level=warning"
   },
   "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@supabase/ssr": "^0.12.3",
     "@supabase/supabase-js": "^2.110.7",
-    "liquid-gooey": "^0.1.0"
+    "liquid-gooey": "^0.1.0",
+    "satori": "^0.63.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.12"
   }
 }

@@ -1,49 +1,36 @@
-/* QR generator page; nav, footer and tokens come from /policies/policy.css */
-.qr-page { padding-top: 56px; padding-bottom: 80px; }
-.qr-page h1 { font-family: var(--serif); font-weight: 400; font-size: 48px; line-height: 56px; color: var(--ink); }
-.qr-sub { margin-top: 12px; font-family: var(--serif); font-style: italic; font-size: 20px; line-height: 28px; color: var(--teal-deep); }
+/* QR generator page. Nav, footer, tokens and buttons come from /shared/*. */
+.qr-page { padding: 48px var(--margin) 96px; }
+.qr-wrap { max-width: var(--max); margin-inline: auto; }
+.qr-page h1 { color: var(--text-primary); }
+.qr-sub { margin-top: 12px; color: var(--text-secondary); font-style: italic; }
 
-.qr-card { margin-top: 32px; display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 40px; padding: 32px; background: var(--sand-2); border: 1px solid var(--line); border-radius: 16px; }
+.qr-card { margin-top: 32px; display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 40px; padding: 32px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-16); }
 .qr-form { display: flex; flex-direction: column; }
-.qr-label { margin-top: 24px; margin-bottom: 8px; font-size: 14px; line-height: 20px; font-weight: 600; color: var(--ink); }
+.qr-label { margin-top: 24px; margin-bottom: 8px; font: 600 14px/20px var(--sans); color: var(--text-primary); }
 .qr-label:first-child { margin-top: 0; }
-.qr-label em { font-style: normal; font-weight: 400; color: var(--teal-deep); }
-#qr-url { width: 100%; height: 48px; padding: 0 14px; font: inherit; font-size: 16px; color: var(--ink); background: #fff; border: 1px solid var(--line); border-radius: 10px; }
-#qr-url:focus-visible { outline: 2px solid var(--clay-deep); outline-offset: 2px; }
+.qr-label em { font-style: normal; font-weight: 400; color: var(--text-secondary); }
+#qr-url { width: 100%; height: 48px; padding: 0 16px; font: 400 16px/24px var(--sans); color: var(--text-primary); background: var(--white); border: 1px solid var(--border-strong); border-radius: var(--radius-8); }
 .qr-image-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
-.qr-image-name { font-size: 14px; line-height: 20px; color: var(--teal-deep); overflow-wrap: anywhere; }
-.qr-link { font: inherit; font-size: 14px; color: var(--clay-deep); background: none; border: 0; padding: 0; cursor: pointer; }
-.qr-link:hover { text-decoration: underline; text-underline-offset: 3px; }
-.qr-msg { min-height: 20px; margin-top: 12px; font-size: 14px; line-height: 20px; color: var(--clay-deep); }
+.qr-image-name { font: 400 14px/20px var(--sans); color: var(--text-secondary); overflow-wrap: anywhere; }
+.qr-link { font: 500 14px/20px var(--sans); color: var(--accent); background: none; border: 0; padding: 8px 0; cursor: pointer; }
+.qr-link:hover { color: var(--accent-hover); text-decoration: underline; text-underline-offset: 3px; }
+.qr-msg { min-height: 20px; margin-top: 12px; font: 400 14px/20px var(--sans); color: var(--clay-700); }
 
-.qr-btn { display: inline-flex; align-items: center; justify-content: center; height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--ink); background: var(--ink); color: var(--sand); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: background-color 150ms, color 150ms; }
-.qr-btn:hover:not(:disabled) { background: var(--teal-deep); border-color: var(--teal-deep); }
-.qr-btn-ghost { background: transparent; color: var(--ink); }
-.qr-btn-ghost:hover:not(:disabled) { background: var(--ink); color: var(--sand); border-color: var(--ink); }
-.qr-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.qr-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 24px; border-radius: var(--radius-999); border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-on-accent); font: 600 16px/24px var(--sans); cursor: pointer; transition: background-color 150ms, color 150ms; }
+.qr-btn:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); }
+.qr-btn-ghost { background: transparent; color: var(--accent); }
+.qr-btn-ghost:hover:not(:disabled) { background: var(--bg-sunken); color: var(--accent-hover); border-color: var(--accent-hover); }
+.qr-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .qr-preview { display: flex; flex-direction: column; align-items: stretch; gap: 16px; }
-.qr-canvas, .qr-empty { aspect-ratio: 1; width: 100%; border-radius: 12px; background: #fff; border: 1px solid var(--line); }
+.qr-canvas, .qr-empty { aspect-ratio: 1; width: 100%; border-radius: var(--radius-8); background: var(--white); border: 1px solid var(--border); }
 .qr-canvas svg, .qr-canvas canvas { display: block; width: 100%; height: 100%; }
-.qr-empty { display: grid; place-items: center; padding: 24px; text-align: center; font-size: 14px; line-height: 20px; color: var(--teal-deep); border-style: dashed; }
+.qr-empty { display: grid; place-items: center; padding: 24px; text-align: center; font: 400 14px/20px var(--sans); color: var(--text-secondary); border-style: dashed; }
 .qr-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
 @media (max-width: 1023px) {
   .qr-page { padding-top: 32px; padding-bottom: 48px; }
-  .qr-page h1 { font-size: 34px; line-height: 42px; }
-  .qr-sub { font-size: 18px; line-height: 26px; }
   .qr-card { grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 20px; }
 }
-
 [hidden] { display: none !important; }
-
-/* Dark theme (tokens flip in /policies/policy.css; these are the hard-coded whites) */
-html[data-theme="dark"] #qr-url { background: #26403F; color: var(--ink); }
-html[data-theme="dark"] #qr-url::placeholder { color: rgba(236, 224, 204, 0.72); }
-html[data-theme="dark"] .qr-empty { background: #26403F; }
-html[data-theme="dark"] .qr-btn { background: #E8956A; border-color: #E8956A; color: #142425; }
-html[data-theme="dark"] .qr-btn:hover:not(:disabled) { background: #F0A982; border-color: #F0A982; }
-html[data-theme="dark"] .qr-btn-ghost { background: transparent; color: var(--ink); border-color: rgba(236, 224, 204, 0.4); }
-html[data-theme="dark"] .qr-btn-ghost:hover:not(:disabled) { background: #E8956A; border-color: #E8956A; color: #142425; }
 /* .qr-canvas stays white on purpose: scanners need the light quiet zone */
-@media (prefers-reduced-motion: reduce) { .qr-btn { transition: none; } }

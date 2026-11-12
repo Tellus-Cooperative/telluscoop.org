@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <title>Página no encontrada · Tellus Cooperative</title>
+  <meta name="description" content="No encontramos esa página. Vuelva al inicio de Tellus Cooperative." />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/png" href="/uploads/TellusCooperative%20ICON.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400,0,1;1,9..144,400,0,1&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/shared/tokens.css" />
+  <link rel="stylesheet" href="/shared/site.css" />
+  <style>
+    .nf { padding: 96px var(--margin); min-height: 60vh; }
+    .nf-in { max-width: var(--max); margin-inline: auto; display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
+    .nf .t-eyebrow { color: var(--text-brand); }
+    .nf p.t-lead { max-width: 760px; color: var(--text-secondary); }
+    @media (max-width: 767px) { .nf { padding-block: 64px; } }
+  </style>
+</head>
+<body id="top">
+  <a class="tl-skip" href="#main" data-i18n-skip>Saltar al contenido</a>
+  <div data-tellus="nav" data-variant="main" data-lang="auto"></div>
+
+  <main id="main">
+    <section class="nf" data-section-theme="teal" aria-labelledby="nf-h">
+      <div class="nf-in">
+        <p class="t-eyebrow">Error 404</p>
+        <h1 class="t-display" id="nf-h">No encontramos esa página.</h1>
+        <p class="t-lead" id="nf-p">El enlace puede estar roto o la página se movió. Vuelva al inicio para seguir explorando Tellus.</p>
+        <a class="btn btn--primary" id="nf-a" href="/">Ir al inicio</a>
+      </div>
+    </section>
+  </main>
+
+  <div data-tellus="footer" data-lang="auto"></div>
+
+  <script src="/shared/site.js"></script>
+  <script>
+    (function () {
+      var T = {
+        es: ['No encontramos esa página.', 'El enlace puede estar roto o la página se movió. Vuelva al inicio para seguir explorando Tellus.', 'Ir al inicio', 'Página no encontrada · Tellus Cooperative'],
+        en: ["We couldn't find that page.", 'The link may be broken or the page may have moved. Head back home to keep exploring Tellus.', 'Go home', 'Page not found · Tellus Cooperative']
+      };
+      function apply(l) {
+        var d = T[l === 'en' ? 'en' : 'es'];
+        document.documentElement.lang = l === 'en' ? 'en' : 'es';
+        document.getElementById('nf-h').textContent = d[0];
+        document.getElementById('nf-p').textContent = d[1];
+        document.getElementById('nf-a').textContent = d[2];
+        document.title = d[3];
+      }
+      apply(window.TellusShell ? window.TellusShell.lang() : 'es');
+      window.addEventListener('tellus:lang', function (e) { apply(e.detail.lang); });
+    })();
+  </script>
+</body>
+</html>

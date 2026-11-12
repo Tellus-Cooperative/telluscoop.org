@@ -5,50 +5,48 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 ## Commands
 
 ```bash
-npm run dev    # serve the site at http://localhost:8080 (static, no build step)
+npm run dev    # serve the site at http://localhost:8080 (static; serve.json mirrors vercel.json rewrites)
+npm run build  # esbuild: home-main.jsx + foundation.jsx → dist/home.js (output is committed)
 npm test       # node --test tests/*.test.mjs
 ```
 
-There is no bundler, TypeScript, or lint step. The site deploys to Vercel (telluscoop.org) as static files plus one serverless function.
+No TypeScript or lint step. The site deploys to Vercel (telluscoop.org) as static files plus serverless functions in `api/`. Vercel runs no build: always run `npm run build` and commit `dist/home.js` after touching `foundation.jsx`, `home-main.jsx` or `i18n.js`.
 
 ## The site
 
-### 1. Public marketing site (`index.html`)
+Source of truth for the design: Figma file `XRqSz2oG6K622fa44wG8Gl`. Only two font families (Fraunces 400/italic, Inter 400/500/600), no text under 14px, accent (`--accent`) only on clickable elements, one primary button per view, official assets only (never redraw logos/mascots, no AI images).
 
-A no-bundler browser prototype. React 18 and Babel are loaded from CDN; JSX files are transpiled in-browser at runtime.
-
-**Module system: none.** Shared components are attached to `window`:
-
-```js
-// tweaks-panel.jsx → Object.assign(window, { useTweaks, TweaksPanel, TweakColor, ... })
-// foundation.jsx   → window.FoundationSystem
-// i18n.js          → window.LANG_TRANSLATIONS (en/es dictionaries)
-```
+### Shared shell (`shared/`) — used by every page except `/hub`
 
 | File | Purpose |
 |---|---|
-| `index.html` | Entry point. Mounts the app, holds `TWEAK_DEFAULTS` |
-| `foundation.jsx` | All page sections as one `FoundationSystem` component |
-| `tweaks-panel.jsx` | Design-tweaks shell and form controls |
-| `i18n.js` | English/Spanish translation dictionaries |
-| `tokens.css` / `styles/tokens.css` | Design tokens (CSS custom properties) |
-| `foundation.css` | Component styles for `foundation.jsx` |
-| `image-slot.js` | `<image-slot>` custom element for drag-and-drop image fills |
-| `brand.html` | Brand guidelines page, served at `/brand` via `vercel.json` rewrite |
+| `shared/tokens.css` | Primitives, 5 section themes via `data-section-theme="claro\|teal\|naranjo\|cielo\|verde"`, spacing, radii, text styles |
+| `shared/site.css` / `shared/site.js` | Plain-JS shell: nav (main + policy variants), footer, city ribbon, final CTA, Join modal |
+| `shared/img/` | Official assets exported from Figma (map, mascots WebP 1x/2x, social icons, logos, allies) |
+
+Static pages include the shell with placeholders: `<div data-tellus="nav" data-variant="main|policy" data-lang="es|en" data-alt-href="…">`, `<div data-tellus="ribbon|cta" data-section-theme="…">`, `<div data-tellus="footer" data-lang="…">`, plus `<script src="/shared/site.js">`. `[data-join]` opens the Join modal (Beehiiv via `api/subscribe.js`). `window.TellusShell` exposes `mount`, `openJoin`, `setLang`.
+
+### 1. Home (`index.html`)
+
+React 18 (UMD from CDN) + `dist/home.js` compiled from `home-main.jsx`/`foundation.jsx`. No Babel in the browser, no Tweaks panel. `i18n.js` holds en/es/pt copy. `foundation.css` holds Home-only styles. Articles come from `api/articles.js` (server-side Beehiiv RSS, cached) with static fallbacks — never use public CORS proxies.
+
+| File | Purpose |
+|---|---|
+| `brand.html` + `brand.css` | Brand guidelines at `/brand` |
+| `resources/` | Directory (`index.html`, `resources.js/css`, `tools.json`) and tool profile (`tool.html`, `tool.js`); counts are computed from `tools.json` |
+| `api/subscribe.js` | Beehiiv newsletter signup |
+| `api/articles.js` | Beehiiv RSS → JSON |
+| `api/tool-page.js` | Serves `/resources/tools/:slug` with per-slug meta injected between `<!--TOOL_META-->` markers |
+| `api/og-tool.js` | Per-tool OG PNG (`/og/tools/:slug.png`, satori + resvg) |
+| `og/` | Static OG images (1200×630) per page |
+| `sitemap.xml`, `robots.txt`, `404.html` | SEO + custom 404 (hub keeps its own) |
 | `stellar/index.html` | Redirect to demo.stellarpassport.xyz |
-| `api/subscribe.js` | Vercel serverless function — Beehiiv newsletter signup |
 
-**Design tokens**: three live-tweakable palette colors — `--sand` `#ECE0CC` (background), `--teal` `#3F8487` (primary), `--clay` `#C75A2A` (accent). Set on `<html>` by the `App` component's `useEffect`. The `TWEAK_DEFAULTS` object in `index.html` is delimited by `/*EDITMODE-BEGIN*/` … `/*EDITMODE-END*/` — the omelette design host rewrites that block on disk when tweaks are saved.
-
-**Scroll animations**: `Reveal` wraps `useReveal` (IntersectionObserver) — `<Reveal delay={N}>` fades+slides children in on scroll (ms). `useCountUp(target, run)` drives stat counters, started by `useReveal`'s `shown` boolean.
-
-**image-slot**: `<image-slot id="…" shape="rect|circle|rounded|pill" placeholder="…">` persists dropped images via a `.image-slots.state.json` sidecar at the project root — the write only works inside the omelette runtime; elsewhere slots are read-only display.
-
-**Fonts**: Fraunces (`--serif`), Inter (`--sans`), JetBrains Mono (`--mono`), from Google Fonts.
+`theme.js`/`theme.css` (old dark mode) are kept only because `hub/`, `merch/` and `tools/fear-greed` still load them. Never touch `hub/`, `hub.html` or `uploads/OPENGRAPH.jpg` (used by the hub).
 
 ### 2. Policy pages and tools
 
-- `policies/` — static Código de Conducta and Embajadores Stellar Chile pages (ES at `/code-of-conduct`, `/programs/stellar-chile/ambassadors`; EN under `/en/...`). Shared `policy.css`/`policy.js`; the footer is identical across pages of the same language. Tests: `tests/policies.test.mjs`.
+- `policies/` — static Código de Conducta and Embajadores Stellar Chile pages (ES at `/code-of-conduct`, `/programs/stellar-chile/ambassadors`; EN under `/en/...`). Shared `policy.css`/`policy.js` plus the `shared/` shell; ES/EN linked with `hreflang`. Tests: `tests/policies.test.mjs`.
 - `tools/qr-generator/` — standalone public QR generator served at `/tools/qr-generator` (no backend, no login). Tests: `tests/qr-generator.test.mjs`.
 - `tools/fear-greed/` — Fear & Greed tool at `/tools/fear-greed`.
 - The former `/ops/*` dashboards and `/tierly` were removed from the site; Tierly lives at tirly.xyz.

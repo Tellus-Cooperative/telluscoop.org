@@ -3,644 +3,279 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script>(function(){var t;try{t=localStorage.getItem('tellus-theme')}catch(e){}if(t!=='dark'&&t!=='light')t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})()</script>
-  <title>Brand Guide · Tellus Cooperative Foundation</title>
-  <meta name="description" content="Official brand assets, color palette, contrast guide, and usage policy for Tellus Cooperative Foundation." />
+  <meta name="color-scheme" content="light" />
+  <title>Brand Guide · Tellus Cooperative</title>
+  <meta name="description" content="Official brand assets, color system, accessibility guidelines and usage policy for Tellus Cooperative Foundation." />
   <meta name="robots" content="index, follow" />
-  <link rel="icon" type="image/png" href="uploads/TellusCooperative%20ICON.png" />
+  <link rel="canonical" href="https://telluscoop.org/brand" />
 
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Tellus Cooperative" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:url" content="https://telluscoop.org/brand" />
+  <meta property="og:title" content="Brand Guide · Tellus Cooperative" />
+  <meta property="og:description" content="Official logos, color system, contrast guide and usage policy for the Tellus Cooperative brand." />
+  <meta property="og:image" content="https://telluscoop.org/og/og-brand.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Tellus Cooperative brand guide" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@TellusCoop" />
+  <meta name="twitter:title" content="Brand Guide · Tellus Cooperative" />
+  <meta name="twitter:description" content="Official logos, color system, contrast guide and usage policy for the Tellus Cooperative brand." />
+  <meta name="twitter:image" content="https://telluscoop.org/og/og-brand.png" />
+  <meta name="twitter:image:alt" content="Tellus Cooperative brand guide" />
+
+  <link rel="icon" type="image/png" href="/uploads/TellusCooperative%20ICON.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="/theme.css" />
-  <style>
-    :root {
-      --sand: #ECE0CC;
-      --sand-soft: #F5EDDD;
-      --sand-muted: #D4C8B5;
-      --teal: #3F8487;
-      --teal-deep: #2A5A5C;
-      --teal-ink: #1F3536;
-      --clay: #C75A2A;
-      --clay-deep: #9E441F;
-      --cream-90: rgba(236,224,204,0.90);
-      --cream-70: rgba(236,224,204,0.70);
-      --serif: 'Fraunces', 'Instrument Serif', Georgia, serif;
-      --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      --mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { background: var(--sand); color: var(--teal-ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
-    body { line-height: 1.55; }
-
-    .eyebrow {
-      font-family: var(--sans); font-size: 11px; font-weight: 500;
-      letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal-deep);
-    }
-
-    /* Nav */
-    .bn-nav {
-      position: sticky; top: 0; z-index: 50;
-      background: rgba(236,224,204,0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--sand-muted);
-    }
-    .bn-nav-inner {
-      max-width: 1320px; margin: 0 auto; padding: 14px 48px;
-      display: flex; align-items: center; justify-content: space-between; gap: 24px;
-    }
-    .bn-nav-home { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
-    .bn-nav-home img { height: 38px; width: auto; }
-    .bn-nav-home span { font-family: var(--serif); font-size: 16px; letter-spacing: -0.02em; color: var(--teal-deep); }
-    .bn-nav-links { display: flex; gap: 24px; }
-    .bn-nav-links a { font-size: 13px; font-weight: 500; color: var(--teal-ink); opacity: 0.78; text-decoration: none; transition: opacity 180ms; }
-    .bn-nav-links a:hover { opacity: 1; }
-
-    /* Sections */
-    .bn-section { max-width: 1320px; margin: 0 auto; padding: 80px 48px; }
-    .bn-section + .bn-section { border-top: 1px solid var(--sand-muted); }
-    .bn-section-head { margin-bottom: 48px; }
-    .bn-h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(40px, 5vw, 72px); line-height: 1.04; letter-spacing: -0.025em; }
-    .bn-h1 em { font-style: italic; color: var(--teal); }
-    .bn-h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 3.2vw, 48px); line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 8px; }
-    .bn-lede { font-size: 17px; color: var(--teal-ink); opacity: 0.78; max-width: 600px; margin-top: 16px; }
-
-    /* Hero */
-    .bn-hero { padding: 96px 48px 64px; text-align: center; }
-    .bn-hero .bn-h1 { margin-bottom: 16px; }
-    .bn-hero .bn-lede { margin: 0 auto; }
-
-    /* Logo showcase */
-    .bn-logos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 48px; }
-    .bn-hub-logos > :last-child { grid-column: 2; }
-    .bn-logo-card {
-      background: var(--sand-soft); border: 1px solid var(--sand-muted); border-radius: 14px;
-      padding: 40px 24px 28px; display: flex; flex-direction: column; align-items: center; gap: 20px;
-      transition: border-color 280ms ease, box-shadow 280ms ease;
-    }
-    .bn-logo-card:hover { border-color: var(--teal-deep); box-shadow: 0 12px 32px -16px rgba(31,53,54,0.22); }
-    .bn-logo-card.is-dark {
-      background: var(--teal-ink); border-color: var(--teal-ink); color: var(--sand);
-    }
-    .bn-logo-card.is-dark:hover { border-color: var(--teal); box-shadow: 0 12px 32px -16px rgba(31,53,54,0.35); }
-    .bn-logo-preview {
-      width: 100%; height: 160px; border-radius: 10px;
-      display: grid; place-items: center; padding: 24px;
-    }
-    .bn-logo-preview.bg-sand { background: var(--sand); }
-    .bn-logo-preview.bg-dark { background: var(--teal-ink); }
-    .bn-logo-preview.bg-teal { background: var(--teal); }
-    .bn-logo-preview img { max-width: 100%; max-height: 100%; height: auto; width: auto; }
-    .bn-logo-name { font-family: var(--serif); font-size: 17px; letter-spacing: -0.01em; color: var(--teal-ink); }
-    .bn-logo-card.is-dark .bn-logo-name { color: var(--sand); }
-    .bn-logo-card.is-dark .bn-logo-description { color: var(--cream-70); }
-    .bn-logo-downloads { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-
-    /* Buttons */
-    .bn-btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 8px 16px; border-radius: 999px; font-size: 12px; font-weight: 500;
-      letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
-      border: 1px solid var(--sand-muted); color: var(--teal-deep); background: var(--sand);
-      transition: all 200ms ease; cursor: pointer; font-family: var(--mono);
-    }
-    .bn-btn:hover { border-color: var(--teal); color: var(--teal-ink); background: var(--sand-soft); transform: translateY(-1px); }
-    .bn-btn-accent { background: var(--clay); border-color: var(--clay); color: var(--sand); }
-    .bn-btn-accent:hover { background: var(--clay-deep); border-color: var(--clay-deep); }
-
-    /* Color palette */
-    .bn-palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 24px; margin-top: 32px; }
-    .bn-color-card { border: 1px solid var(--sand-muted); border-radius: 14px; overflow: hidden; background: var(--sand-soft); }
-    .bn-color-swatch { height: 120px; position: relative; display: grid; place-items: center; }
-    .bn-color-swatch span {
-      font-family: var(--mono); font-size: 13px; letter-spacing: 0.06em; font-weight: 500;
-      padding: 4px 12px; border-radius: 999px; background: rgba(0,0,0,0.12); color: inherit;
-    }
-    .bn-color-info { padding: 16px; display: flex; flex-direction: column; gap: 4px; }
-    .bn-color-name { font-family: var(--serif); font-size: 16px; letter-spacing: -0.01em; }
-    .bn-color-hex { font-family: var(--mono); font-size: 13px; color: var(--teal-deep); letter-spacing: 0.04em; }
-    .bn-color-role { font-size: 12px; color: var(--teal-deep); opacity: 0.7; margin-top: 4px; }
-
-    /* Contrast matrix */
-    .bn-matrix { margin-top: 32px; overflow-x: auto; }
-    .bn-matrix table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid var(--sand-muted); border-radius: 12px; overflow: hidden; font-size: 14px; }
-    .bn-matrix th {
-      background: var(--sand-soft); padding: 12px 16px; font-family: var(--mono); font-weight: 500;
-      font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--teal-deep);
-      text-align: left; border-bottom: 1px solid var(--sand-muted);
-    }
-    .bn-matrix td { padding: 14px 16px; font-family: var(--mono); font-size: 13px; letter-spacing: 0.03em; border-bottom: 1px solid var(--sand-muted); text-align: center; }
-    .bn-matrix tr:last-child td { border-bottom: none; }
-    .bn-matrix .swatch-cell { width: 50px; }
-    .bn-matrix .swatch-dot { width: 28px; height: 28px; border-radius: 8px; display: inline-block; border: 1px solid rgba(0,0,0,0.08); }
-    .bn-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
-    .bn-badge.aaa { background: #1B5E20; color: #C8E6C9; }
-    .bn-badge.aa { background: #2E7D32; color: #C8E6C9; }
-    .bn-badge.aa-lg { background: #F57C00; color: #FFF; }
-    .bn-badge.fail { background: #C62828; color: #FFCDD2; }
-    .bn-badge.recommended { background: var(--teal-ink); color: var(--sand); }
-
-    /* Guidelines */
-    .bn-guidelines { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 32px; }
-    .bn-guide-card {
-      background: var(--sand-soft); border: 1px solid var(--sand-muted); border-radius: 14px;
-      padding: 32px; display: flex; flex-direction: column; gap: 16px;
-    }
-    .bn-guide-card h3 { font-family: var(--serif); font-size: 22px; letter-spacing: -0.015em; }
-    .bn-guide-card.do { border-left: 4px solid var(--teal); }
-    .bn-guide-card.dont { border-left: 4px solid var(--clay); }
-    .bn-guide-card ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-    .bn-guide-card li { font-size: 14px; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
-    .bn-guide-card li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
-    .bn-guide-card.do li::before { background: var(--teal); }
-    .bn-guide-card.dont li::before { background: var(--clay); }
-
-    /* Policy */
-    .bn-policy {
-      background: var(--sand-soft); border: 1px solid var(--sand-muted); border-radius: 14px;
-      padding: 40px; margin-top: 32px;
-    }
-    .bn-policy p { font-size: 15px; line-height: 1.65; margin-bottom: 16px; }
-    .bn-policy p:last-child { margin-bottom: 0; }
-    .bn-policy em { font-style: normal; color: var(--clay); font-weight: 500; }
-
-    /* Footer */
-    .bn-footer {
-      border-top: 1px solid var(--sand-muted); padding: 48px; text-align: center;
-      font-size: 13px; color: var(--teal-deep); opacity: 0.65;
-    }
-    .bn-footer a { color: var(--teal-text); text-decoration: none; transition: color 180ms; }
-    .bn-footer a:hover { color: var(--clay); }
-
-    .bn-back-home {
-      display: inline-flex; align-items: center; gap: 8px; margin-bottom: 16px;
-      font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em;
-      color: var(--teal-text); text-decoration: none; transition: color 180ms;
-    }
-    .bn-back-home:hover { color: var(--clay); }
-
-    .bn-nav-end { display: flex; align-items: center; gap: 24px; }
-    .bn-nav-end .theme-toggle { --tt-fg: var(--teal-ink); --tt-line: var(--sand-muted); --tt-hover: var(--sand-soft); --tt-focus: var(--teal); }
-
-    /* Dark theme (html[data-theme="dark"], set before paint by the head snippet; toggle in /theme.js) */
-    html[data-theme="dark"] {
-      --sand: #142425; --sand-soft: #1F3536; --sand-muted: rgba(236,224,204,0.14);
-      --teal-ink: #ECE0CC; --teal-deep: #ECE0CC; --teal: #7FB5B7;
-      --clay: #E8956A; --clay-deep: #F0A982;
-    }
-    html[data-theme="dark"] .bn-nav { background: rgba(20,36,37,0.88); }
-    html[data-theme="dark"] .bn-logo-card:hover { border-color: #7FB5B7; box-shadow: 0 12px 32px -16px rgba(0,0,0,0.6); }
-    html[data-theme="dark"] .bn-logo-card.is-dark { --teal-ink: #0F1D1E; border-color: rgba(236,224,204,0.14); }
-    html[data-theme="dark"] .bn-logo-card.is-dark .bn-logo-name { color: #ECE0CC; }
-    /* Specimens keep the real brand colors in both themes */
-    html[data-theme="dark"] .bn-logo-preview,
-    html[data-theme="dark"] .bn-color-swatch,
-    html[data-theme="dark"] .bn-matrix {
-      --sand: #ECE0CC; --sand-soft: #F5EDDD; --sand-muted: #D4C8B5;
-      --teal: #3F8487; --teal-deep: #2A5A5C; --teal-ink: #1F3536;
-      --clay: #C75A2A; --clay-deep: #9E441F;
-    }
-    html[data-theme="dark"] .bn-logo-preview.bg-dark { box-shadow: inset 0 0 0 1px rgba(236,224,204,0.14); }
-    html[data-theme="dark"] .bn-matrix table { background: #F5EDDD; color: #1F3536; }
-    /* AA contrast in both themes: no opacity-dimmed text, link text on --teal-text,
-       sand-on-clay buttons on clay-deep, badges with white text. */
-    :root { --teal-text: #2A5A5C; }
-    html[data-theme="dark"] { --teal-text: #7FB5B7; }
-    .bn-footer { opacity: 1; }
-    .bn-color-role { opacity: 1; }
-    .bn-logo-card p[style], .bn-section > p[style], .bn-policy p[style], .bn-matrix th span[style] { opacity: 1 !important; }
-    .bn-lede { opacity: 1; }
-    .bn-lede a { color: var(--teal-text); }
-    .bn-btn-accent { background: var(--clay-deep); border-color: var(--clay-deep); }
-    .bn-btn-accent:hover { background: var(--clay-deep); border-color: var(--clay-deep); filter: brightness(0.9); }
-    .bn-policy em { color: var(--clay-deep); }
-    .bn-badge.aa { color: #FFFFFF; }
-    .bn-badge.aa-lg { background: #B45309; }
-    .bn-badge.fail { color: #FFFFFF; }
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      .bn-btn, .bn-logo-card, .bn-nav-links a { transition: none; }
-      .bn-btn:hover { transform: none; }
-    }
-
-    @media (max-width: 960px) {
-      .bn-nav-inner { padding: 12px 24px; }
-      .bn-nav-links { display: none; }
-      .bn-section { padding: 56px 24px; }
-      .bn-hero { padding: 64px 24px 48px; }
-      .bn-logos { grid-template-columns: 1fr; gap: 20px; }
-      .bn-hub-logos > :last-child { grid-column: auto; }
-      .bn-guidelines { grid-template-columns: 1fr; }
-      .bn-matrix { font-size: 12px; }
-    }
-    @media (max-width: 640px) {
-      .bn-section { padding: 40px 18px; }
-      .bn-hero { padding: 48px 18px 36px; }
-      .bn-palette { grid-template-columns: repeat(2, 1fr); gap: 14px; }
-      .bn-policy { padding: 24px; }
-      .bn-footer { padding: 32px 18px; }
-    }
-  </style>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400,0,1;1,9..144,400,0,1&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/shared/tokens.css" />
+  <link rel="stylesheet" href="/shared/site.css" />
+  <link rel="stylesheet" href="/brand.css" />
 </head>
-<body>
+<body id="top">
+  <a class="tl-skip" href="#main">Skip to content</a>
+  <div data-tellus="nav" data-variant="main" data-lang="en"></div>
 
-<!-- Nav -->
-<nav class="bn-nav">
-  <div class="bn-nav-inner">
-    <a class="bn-nav-home" href="/" aria-label="Tellus Cooperative — home">
-      <img class="logo-light" src="/uploads/tellus.svg" alt="" />
-      <img class="logo-dark" src="/policies/assets/tellus-sand.svg" alt="" />
-      <span>Brand Guide</span>
-    </a>
-    <div class="bn-nav-end">
-    <div class="bn-nav-links">
-      <a href="/">Home</a>
-      <a href="#logos">Logos</a>
-      <a href="#hub-logos">Hub Logos</a>
-      <a href="#colors">Colors</a>
-      <a href="#contrast">Contrast</a>
-      <a href="#guidelines">Guidelines</a>
-      <a href="#policy">Policy</a>
-    </div>
-    <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode"><svg class="theme-toggle-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg><svg class="theme-toggle-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4"/></svg></button>
-    </div>
-  </div>
-</nav>
+  <main id="main">
+    <!-- 01 Portada -->
+    <section class="bn-hero" data-section-theme="teal" aria-labelledby="bn-h1">
+      <div class="bn-wrap">
+        <p class="t-eyebrow bn-eyebrow">Brand guide</p>
+        <h1 class="t-display" id="bn-h1">Tellus Cooperative <em>Brand Guide</em></h1>
+        <p class="t-body-l bn-lede">Official brand assets, color system, accessibility guidelines, and usage policy for the Tellus Cooperative Foundation. This page is the single source of truth for anyone using our brand: press, partners, chapters, and community members.</p>
+        <nav class="bn-index" aria-label="On this page">
+          <a href="#logos" aria-current="location">Logos</a>
+          <a href="#hub-logos">Hub logos</a>
+          <a href="#colors">Colors</a>
+          <a href="#contrast">Contrast</a>
+          <a href="#guidelines">Guidelines</a>
+          <a href="#policy">Policy</a>
+        </nav>
+      </div>
+    </section>
 
-<!-- Hero -->
-<section class="bn-hero">
-  <h1 class="bn-h1">Tellus Cooperative<br><em>Brand Guide</em></h1>
-  <p class="bn-lede">Official brand assets, color system, accessibility guidelines, and usage policy for the Tellus Cooperative Foundation. This page is the single source of truth for anyone using our brand: press, partners, chapters, and community members.</p>
-</section>
+    <div data-tellus="ribbon" data-section-theme="naranjo"></div>
 
-<!-- Logos -->
-<section class="bn-section" id="logos">
-  <div class="bn-section-head">
-    <div class="eyebrow">Brand Assets</div>
-    <h2 class="bn-h2">Logo variants</h2>
-    <p class="bn-lede">Three approved variants of the horizontal wordmark. Right-click or use the download buttons to save in SVG (vector) or PNG (raster). Always use the official files: do not recreate, stretch, or recolor the logo.</p>
-  </div>
-  <div class="bn-logos">
-    <!-- Dark logo -->
-    <div class="bn-logo-card">
-      <div class="bn-logo-preview bg-sand">
-        <img src="BRAND/LOGO EN NEGRO.svg" alt="Tellus horizontal logo · dark" />
+    <!-- 02 Logos -->
+    <section class="bn-sec" id="logos" data-section-theme="claro" aria-labelledby="logos-h">
+      <div class="bn-wrap">
+        <div class="bn-head">
+          <p class="t-eyebrow">Brand assets</p>
+          <h2 class="t-h2" id="logos-h">Logo variants</h2>
+          <p class="t-body-l">Three approved variants of the horizontal wordmark, plus the icon mark. Use the download buttons to save in SVG (vector) or PNG (raster). Always use the official files: do not recreate, stretch, or recolor the logo.</p>
+        </div>
+        <div class="bn-cards">
+          <article class="bn-card">
+            <div class="bn-view bn-view--sand"><img src="/BRAND/LOGO%20EN%20NEGRO.svg" alt="Tellus Cooperative logo, dark" width="167" height="77"></div>
+            <div class="bn-card-body">
+              <h3 class="t-h4">Dark</h3>
+              <p class="t-body-s">For light and sand backgrounds. Default for web, print, documents.</p>
+              <div class="bn-dl"><a class="btn btn--secondary" href="/BRAND/LOGO%20EN%20NEGRO.svg" download>Download SVG</a><a class="btn btn--link" href="/BRAND/LOGO%20EN%20NEGRO%20PNG.png" download>PNG <span aria-hidden="true">→</span></a></div>
+            </div>
+          </article>
+          <article class="bn-card">
+            <div class="bn-view bn-view--brand"><img src="/BRAND/circulo%20naranja%20svg.svg" alt="Tellus Cooperative logo, white" width="167" height="77"></div>
+            <div class="bn-card-body">
+              <h3 class="t-h4">White</h3>
+              <p class="t-body-s">For dark backgrounds. Teal slabs, video overlays, dark mode.</p>
+              <div class="bn-dl"><a class="btn btn--secondary" href="/BRAND/circulo%20naranja%20svg.svg" download>Download SVG</a><a class="btn btn--link" href="/BRAND/LETRAS%20BLANCAS%2C%20CIRCULO%20NARANJA.png" download>PNG <span aria-hidden="true">→</span></a></div>
+            </div>
+          </article>
+          <article class="bn-card">
+            <div class="bn-view bn-view--sand"><img src="/BRAND/LOGO%20EN%20SVG.svg" alt="Tellus Cooperative logo, full color" width="167" height="77"></div>
+            <div class="bn-card-body">
+              <h3 class="t-h4">Full color</h3>
+              <p class="t-body-s">Teal wordmark in brand color. Use on sand or white backgrounds.</p>
+              <div class="bn-dl"><a class="btn btn--secondary" href="/BRAND/LOGO%20EN%20SVG.svg" download>Download SVG</a><a class="btn btn--link" href="/BRAND/logo%20en%20png%20a%20color.png" download>PNG <span aria-hidden="true">→</span></a></div>
+            </div>
+          </article>
+          <article class="bn-card">
+            <div class="bn-view bn-view--sand"><img src="/shared/img/isotipo.svg" alt="Tellus icon mark" width="96" height="96"></div>
+            <div class="bn-card-body">
+              <h3 class="t-h4">Icon mark</h3>
+              <p class="t-body-s">The crescent “t”. Avatars, favicons and small spaces where the wordmark does not fit.</p>
+              <div class="bn-dl"><a class="btn btn--secondary" href="/shared/img/isotipo.svg" download="tellus-icon.svg">Download SVG</a><a class="btn btn--link" href="/uploads/TellusCooperative%20ICON.png" download="tellus-icon.png">PNG <span aria-hidden="true">→</span></a></div>
+            </div>
+          </article>
+        </div>
       </div>
-      <div class="bn-logo-name">Dark</div>
-      <p style="font-size:12px;color:var(--teal-deep);opacity:0.7;text-align:center;">For light and sand backgrounds.<br>Default for web, print, documents.</p>
-      <div class="bn-logo-downloads">
-        <a class="bn-btn" href="BRAND/LOGO%20EN%20NEGRO.svg" download>SVG</a>
-        <a class="bn-btn bn-btn-accent" href="BRAND/LOGO%20EN%20NEGRO%20PNG.png" download>PNG</a>
-      </div>
-    </div>
-    <!-- White logo -->
-    <div class="bn-logo-card">
-      <div class="bn-logo-preview bg-dark">
-        <img src="BRAND/circulo%20naranja%20svg.svg" alt="Tellus horizontal logo · white" />
-      </div>
-      <div class="bn-logo-name">White</div>
-      <p style="font-size:12px;color:var(--teal-deep);opacity:0.7;text-align:center;">For dark backgrounds.<br>Teal slabs, video overlays, dark mode.</p>
-      <div class="bn-logo-downloads">
-        <a class="bn-btn" href="BRAND/circulo%20naranja%20svg.svg" download>SVG</a>
-        <a class="bn-btn bn-btn-accent" href="BRAND/LETRAS%20BLANCAS%2C%20CIRCULO%20NARANJA.png" download>PNG</a>
-      </div>
-    </div>
-    <!-- Color logo -->
-    <div class="bn-logo-card">
-      <div class="bn-logo-preview bg-sand">
-        <img src="BRAND/LOGO EN SVG.svg" alt="Tellus horizontal logo · full color" />
-      </div>
-      <div class="bn-logo-name">Full Color</div>
-      <p style="font-size:12px;color:var(--teal-deep);opacity:0.7;text-align:center;">Teal wordmark in brand color.<br>Use on sand or white backgrounds.</p>
-      <div class="bn-logo-downloads">
-        <a class="bn-btn" href="BRAND/LOGO%20EN%20SVG.svg" download>SVG</a>
-        <a class="bn-btn bn-btn-accent" href="BRAND/logo%20en%20png%20a%20color.png" download>PNG</a>
-      </div>
-    </div>
-  </div>
-  <p style="margin-top:32px;font-size:13px;color:var(--teal-deep);opacity:0.65;text-align:center;font-family:var(--mono);letter-spacing:0.04em;">
-  <div style="margin-top:56px;display:flex;align-items:center;justify-content:center;">
-    <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
-      <div style="width:120px;height:120px;border-radius:24px;background:var(--sand-soft);border:1px solid var(--sand-muted);display:grid;place-items:center;padding:20px;">
-        <img src="uploads/TellusCooperative%20ICON.png" alt="Tellus icon mark" style="max-width:100%;max-height:100%;border-radius:12px;" />
-      </div>
-      <span style="font-family:var(--serif);font-size:16px;letter-spacing:-0.01em;">Icon Mark</span>
-      <div style="display:flex;gap:10px;">
-        <a class="bn-btn" href="BRAND/circulo%20naranja%20svg.svg" download="tellus-icon.svg">SVG</a>
-        <a class="bn-btn bn-btn-accent" href="uploads/TellusCooperative%20ICON.png" download="tellus-icon.png">PNG</a>
-      </div>
-    </div>
-  </div>
-  </p>
-</section>
+    </section>
 
-<!-- Hub Logos -->
-<section class="bn-section" id="hub-logos">
-  <div class="bn-section-head">
-    <div class="eyebrow">Brand Assets</div>
-    <h2 class="bn-h2">Hub &amp; program logos</h2>
-    <p class="bn-lede">Lockups for Stellar Academy and Stellar Barrio. Use these only in materials for those specific programs, never as a substitute for the main Tellus logo.</p>
-  </div>
-  <div class="bn-logos bn-hub-logos">
-    <!-- Stellar Academy full color -->
-    <div class="bn-logo-card">
-      <div class="bn-logo-preview bg-sand">
-        <img src="Hubs/Stellar%20Academy%20Full%20Color.svg" alt="Stellar Academy logo, full color" />
+    <!-- 03 Logos de hubs -->
+    <section class="bn-sec" id="hub-logos" data-section-theme="verde" aria-labelledby="hubs-h">
+      <div class="bn-wrap">
+        <div class="bn-head">
+          <p class="t-eyebrow">Brand assets</p>
+          <h2 class="t-h2" id="hubs-h">Hub &amp; program logos</h2>
+          <p class="t-body-l">Lockups for Stellar Academy and Stellar Barrio. Use these only in materials for those specific programs, never as a substitute for the main Tellus logo.</p>
+        </div>
+        <div class="bn-cards">
+          <article class="bn-card">
+            <div class="bn-view bn-view--sand"><img src="/Hubs/Stellar%20Academy%20Full%20Color.svg" alt="Stellar Academy logo, full color" width="167" height="40"></div>
+            <div class="bn-card-body"><h3 class="t-h4">Stellar Academy</h3><p class="t-body-s">For light and sand backgrounds.</p>
+              <div class="bn-dl"><a class="btn btn--secondary" href="/Hubs/Stellar%20Academy%20Full%20Color.svg" download>Download SVG</a></div></div>
+          </article>
+          <article class="bn-card">
+            <div class="bn-view bn-view--ink"><img src="/Hubs/Stellar%20Academy%20White.svg" alt="Stellar Academy logo, white" width="167" height="40"></div>
+            <div class="bn-card-body"><h3 class="t-h4">Stellar Academy</h3><p class="t-body-s">For dark backgrounds.</p>
+              <div class="bn-dl"><a class="btn btn--secondary" href="/Hubs/Stellar%20Academy%20White.svg" download>Download SVG</a></div></div>
+          </article>
+          <article class="bn-card">
+            <div class="bn-view bn-view--ink"><img src="/Hubs/Stellar%20Barrio%20White.svg" alt="Stellar Barrio logo, white" width="167" height="50"></div>
+            <div class="bn-card-body"><h3 class="t-h4">Stellar Barrio</h3><p class="t-body-s">For dark backgrounds.</p>
+              <div class="bn-dl"><a class="btn btn--secondary" href="/Hubs/Stellar%20Barrio%20White.svg" download>Download SVG</a></div></div>
+          </article>
+          <article class="bn-card">
+            <div class="bn-view bn-view--sand"><img src="/Hubs/Stellar%20Barrio%20Full%20Color.svg" alt="Stellar Barrio logo, full color" width="167" height="50"></div>
+            <div class="bn-card-body"><h3 class="t-h4">Stellar Barrio</h3><p class="t-body-s">For light and sand backgrounds.</p>
+              <div class="bn-dl"><a class="btn btn--secondary" href="/Hubs/Stellar%20Barrio%20Full%20Color.svg" download>Download SVG</a></div></div>
+          </article>
+        </div>
       </div>
-      <div class="bn-logo-name">Stellar Academy</div>
-      <p style="font-size:12px;color:var(--teal-deep);opacity:0.7;text-align:center;">For light and sand backgrounds.</p>
-      <div class="bn-logo-downloads">
-        <a class="bn-btn bn-btn-accent" href="Hubs/Stellar%20Academy%20Full%20Color.svg" download>SVG</a>
-      </div>
-    </div>
-    <!-- Stellar Academy white -->
-    <div class="bn-logo-card is-dark">
-      <div class="bn-logo-preview">
-        <img src="Hubs/Stellar%20Academy%20White.svg" alt="Stellar Academy logo, white" />
-      </div>
-      <div class="bn-logo-name">Stellar Academy</div>
-      <p class="bn-logo-description" style="font-size:12px;text-align:center;">For dark backgrounds.</p>
-      <div class="bn-logo-downloads">
-        <a class="bn-btn bn-btn-accent" href="Hubs/Stellar%20Academy%20White.svg" download>SVG</a>
-      </div>
-    </div>
-    <!-- Stellar Barrio white -->
-    <div class="bn-logo-card is-dark">
-      <div class="bn-logo-preview">
-        <img src="Hubs/Stellar%20Barrio%20White.svg" alt="Stellar Barrio logo, white" />
-      </div>
-      <div class="bn-logo-name">Stellar Barrio</div>
-      <p class="bn-logo-description" style="font-size:12px;text-align:center;">For dark backgrounds.</p>
-      <div class="bn-logo-downloads">
-        <a class="bn-btn bn-btn-accent" href="Hubs/Stellar%20Barrio%20White.svg" download>SVG</a>
-      </div>
-    </div>
-    <!-- Stellar Barrio full color -->
-    <div class="bn-logo-card">
-      <div class="bn-logo-preview bg-sand">
-        <img src="Hubs/Stellar%20Barrio%20Full%20Color.svg" alt="Stellar Barrio logo, full color" />
-      </div>
-      <div class="bn-logo-name">Stellar Barrio</div>
-      <p style="font-size:12px;color:var(--teal-deep);opacity:0.7;text-align:center;">For light and sand backgrounds.</p>
-      <div class="bn-logo-downloads">
-        <a class="bn-btn bn-btn-accent" href="Hubs/Stellar%20Barrio%20Full%20Color.svg" download>SVG</a>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- Colors -->
-<section class="bn-section" id="colors">
-  <div class="bn-section-head">
-    <div class="eyebrow">Color System</div>
-    <h2 class="bn-h2">Official palette</h2>
-    <p class="bn-lede">Three root colors define the entire brand. Every other color in the system is a tint, shade, or opacity variation of these three.</p>
-  </div>
-  <div class="bn-palette">
-    <div class="bn-color-card">
-      <div class="bn-color-swatch" style="background:#ECE0CC; color:var(--teal-ink);">
-        <span>#ECE0CC</span>
+    <!-- 04 Colores -->
+    <section class="bn-sec" id="colors" data-section-theme="claro" aria-labelledby="colors-h">
+      <div class="bn-wrap">
+        <div class="bn-head">
+          <p class="t-eyebrow">Color system</p>
+          <h2 class="t-h2" id="colors-h">Official palette</h2>
+          <p class="t-body-l">Three root colors define the entire brand. Every other color in the system is a tint, shade, or opacity variation of these three.</p>
+        </div>
+        <div class="bn-swatches">
+          <article class="bn-swatch"><div class="bn-chip" style="background:var(--sand-200)"></div><div class="bn-swatch-body"><h3 class="t-h4">Sand</h3><p class="t-meta">#ECE0CC</p><p class="t-body-s">Backgrounds, cards, negative space. The canvas color, never pure white.</p></div></article>
+          <article class="bn-swatch"><div class="bn-chip" style="background:var(--teal-300)"></div><div class="bn-swatch-body"><h3 class="t-h4">Teal</h3><p class="t-meta">#3F8487</p><p class="t-body-s">Primary brand color. Logo wordmark, illustrations, large headings and italics.</p></div></article>
+          <article class="bn-swatch"><div class="bn-chip" style="background:var(--teal-900)"></div><div class="bn-swatch-body"><h3 class="t-h4">Teal Ink</h3><p class="t-meta">#1F3536</p><p class="t-body-s">Body text. Darkest shade, the standard reading color on sand backgrounds.</p></div></article>
+          <article class="bn-swatch"><div class="bn-chip" style="background:var(--teal-600)"></div><div class="bn-swatch-body"><h3 class="t-h4">Teal Deep</h3><p class="t-meta">#2A5A5C</p><p class="t-body-s">Secondary text, metadata, eyebrow labels, and slab backgrounds.</p></div></article>
+          <article class="bn-swatch"><div class="bn-chip" style="background:var(--clay-500)"></div><div class="bn-swatch-body"><h3 class="t-h4">Clay Deep</h3><p class="t-meta">#9E441F</p><p class="t-body-s">The only accent. Buttons, links, and every clickable element (WCAG AA on Sand).</p></div></article>
+          <article class="bn-swatch"><div class="bn-chip" style="background:var(--clay-400)"></div><div class="bn-swatch-body"><h3 class="t-h4">Clay</h3><p class="t-meta">#C75A2A</p><p class="t-body-s">Logo crescent and illustrations only. Never for text or buttons.</p></div></article>
+        </div>
       </div>
-      <div class="bn-color-info">
-        <div class="bn-color-name">Sand</div>
-        <div class="bn-color-hex">#ECE0CC</div>
-        <div class="bn-color-role">Backgrounds, cards, negative space. The canvas color, never pure white.</div>
+    </section>
+
+    <!-- 05 Contraste -->
+    <section class="bn-sec" id="contrast" data-section-theme="claro" aria-labelledby="contrast-h">
+      <div class="bn-wrap">
+        <div class="bn-head">
+          <p class="t-eyebrow">Accessibility</p>
+          <h2 class="t-h2" id="contrast-h">Contrast guide</h2>
+          <p class="t-body-l">WCAG 2.1 contrast ratios for the official color pairs. Use only combinations that pass for the size of text you are setting.</p>
+        </div>
+        <div class="bn-table-wrap">
+          <table class="bn-table">
+            <thead><tr><th scope="col"><span class="sr-only">Sample</span></th><th scope="col">Background → foreground</th><th scope="col">Ratio</th><th scope="col">Normal</th><th scope="col">Large</th><th scope="col">UI</th><th scope="col">Usage</th></tr></thead>
+            <tbody>
+              <tr><td><span class="bn-aa" style="background:var(--sand-200);color:var(--teal-900)" aria-hidden="true">Aa</span></td><th scope="row">Sand #ECE0CC → Teal Ink #1F3536</th><td data-l="Ratio">9.9:1</td><td data-l="Normal">AAA</td><td data-l="Large">AAA</td><td data-l="UI">AAA</td><td class="use">Default body text</td></tr>
+              <tr><td><span class="bn-aa" style="background:var(--sand-200);color:var(--teal-600)" aria-hidden="true">Aa</span></td><th scope="row">Sand #ECE0CC → Teal Deep #2A5A5C</th><td data-l="Ratio">5.9:1</td><td data-l="Normal">AA</td><td data-l="Large">AAA</td><td data-l="UI">AAA</td><td class="use">Eyebrows, metadata, stat numbers</td></tr>
+              <tr><td><span class="bn-aa" style="background:var(--sand-200);color:var(--teal-300)" aria-hidden="true">Aa</span></td><th scope="row">Sand #ECE0CC → Teal #3F8487</th><td data-l="Ratio">3.3:1</td><td data-l="Normal">Fail</td><td data-l="Large">OK</td><td data-l="UI">OK</td><td class="use">Headings and italics at 24 px or larger only</td></tr>
+              <tr><td><span class="bn-aa" style="background:var(--sand-200);color:var(--clay-400)" aria-hidden="true">Aa</span></td><th scope="row">Sand #ECE0CC → Clay #C75A2A</th><td data-l="Ratio">3.3:1</td><td data-l="Normal">Fail</td><td data-l="Large">OK</td><td data-l="UI">OK</td><td class="use">Logo crescent and illustrations only</td></tr>
+              <tr><td><span class="bn-aa" style="background:var(--sand-200);color:var(--clay-500)" aria-hidden="true">Aa</span></td><th scope="row">Sand #ECE0CC → Clay Deep #9E441F</th><td data-l="Ratio">4.9:1</td><td data-l="Normal">AA</td><td data-l="Large">AAA</td><td data-l="UI">AAA</td><td class="use">Links and every clickable element</td></tr>
+              <tr><td><span class="bn-aa" style="background:var(--clay-500);color:var(--sand-50)" aria-hidden="true">Aa</span></td><th scope="row">Clay Deep #9E441F → Sand 50 #FBF7F0</th><td data-l="Ratio">6.0:1</td><td data-l="Normal">AA</td><td data-l="Large">AAA</td><td data-l="UI">AAA</td><td class="use">Primary button label</td></tr>
+              <tr><td><span class="bn-aa" style="background:var(--teal-600);color:var(--sand-50)" aria-hidden="true">Aa</span></td><th scope="row">Teal Deep #2A5A5C → Sand 50 #FBF7F0</th><td data-l="Ratio">7.2:1</td><td data-l="Normal">AAA</td><td data-l="Large">AAA</td><td data-l="UI">AAA</td><td class="use">Text on teal slabs</td></tr>
+              <tr><td><span class="bn-aa" style="background:var(--teal-900);color:var(--sand-50)" aria-hidden="true">Aa</span></td><th scope="row">Teal Ink #1F3536 → Sand 50 #FBF7F0</th><td data-l="Ratio">12.1:1</td><td data-l="Normal">AAA</td><td data-l="Large">AAA</td><td data-l="UI">AAA</td><td class="use">Pill buttons, mobile nav, badges</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="t-meta bn-thresholds">Normal text ≥ 4.5:1 · Large text ≥ 3:1 · UI / graphics ≥ 3:1. Reference: WCAG 2.1 Contrast (Minimum).</p>
+        <div class="bn-rules">
+          <h3 class="t-h3">Key rules</h3>
+          <p>— Body text is always Teal Ink (#1F3536) on Sand. Ratio 9.9:1, passes AAA.</p>
+          <p>— Clay Deep (#9E441F) is the only accent, and it is reserved for clickable elements: buttons, links, form actions.</p>
+          <p>— Teal (#3F8487) and Clay (#C75A2A) fail AA for body text on Sand. Use Teal only for headings at 24 px or larger, and Clay only in the logo and illustrations.</p>
+          <p>— Text on teal slabs uses Sand 50 on Teal Deep (#2A5A5C), 7.2:1.</p>
+          <p>— Do not place Clay text on Teal backgrounds or vice versa: contrast drops below 2:1.</p>
+        </div>
       </div>
-    </div>
-    <div class="bn-color-card">
-      <div class="bn-color-swatch" style="background:#3F8487; color:var(--cream-90);">
-        <span>#3F8487</span>
+    </section>
+
+    <!-- 06 Guías de uso -->
+    <section class="bn-sec" id="guidelines" data-section-theme="claro" aria-labelledby="guidelines-h">
+      <div class="bn-wrap">
+        <div class="bn-head">
+          <p class="t-eyebrow">Usage</p>
+          <h2 class="t-h2" id="guidelines-h">Brand guidelines</h2>
+          <p class="t-body-l">How to represent Tellus Cooperative consistently across web, print and community materials.</p>
+        </div>
+        <div class="bn-dd">
+          <div>
+            <h3 class="t-h3">Do</h3>
+            <ul class="bn-rules-list">
+              <li><span class="bn-mark" aria-hidden="true">✓</span><span>Use the official logo files from this page, never recreate or trace the wordmark.</span></li>
+              <li><span class="bn-mark" aria-hidden="true">✓</span><span>Maintain a clear exclusion zone around the logo equal to the height of the letter “T”.</span></li>
+              <li><span class="bn-mark" aria-hidden="true">✓</span><span>Use the dark logo on light/neutral backgrounds and the white logo on dark backgrounds.</span></li>
+              <li><span class="bn-mark" aria-hidden="true">✓</span><span>Follow the contrast rules above: body text must be Teal Ink (#1F3536) on Sand (#ECE0CC).</span></li>
+              <li><span class="bn-mark" aria-hidden="true">✓</span><span>Use the brand typefaces: Fraunces for headings, Inter for body text, data, and UI.</span></li>
+              <li><span class="bn-mark" aria-hidden="true">✓</span><span>When referring to us in text, write “Tellus Cooperative” or “Tellus Cooperative Foundation” on first mention.</span></li>
+              <li><span class="bn-mark" aria-hidden="true">✓</span><span>Link back to telluscoop.org when using our brand assets online.</span></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="t-h3">Don’t</h3>
+            <ul class="bn-rules-list">
+              <li><span class="bn-mark bn-mark--no" aria-hidden="true">✕</span><span>Stretch, compress, rotate, or distort the logo in any way.</span></li>
+              <li><span class="bn-mark bn-mark--no" aria-hidden="true">✕</span><span>Change the logo colors: use the approved variants only.</span></li>
+              <li><span class="bn-mark bn-mark--no" aria-hidden="true">✕</span><span>Add drop shadows, outlines, or effects to the logo.</span></li>
+              <li><span class="bn-mark bn-mark--no" aria-hidden="true">✕</span><span>Place the logo on busy, low-contrast, or clashing backgrounds.</span></li>
+              <li><span class="bn-mark bn-mark--no" aria-hidden="true">✕</span><span>Use Clay (#C75A2A) or Teal (#3F8487) for body text: they fail WCAG AA at normal sizes.</span></li>
+              <li><span class="bn-mark bn-mark--no" aria-hidden="true">✕</span><span>Create your own lockups, sub-brands, or derivative logos without written permission.</span></li>
+              <li><span class="bn-mark bn-mark--no" aria-hidden="true">✕</span><span>Use the Tellus brand to imply endorsement, partnership, or sponsorship without our explicit consent.</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="bn-clear">
+          <div class="bn-clear-demo"><div class="bn-clear-zone"><img src="/BRAND/LOGO%20EN%20NEGRO.svg" alt="Tellus Cooperative logo inside its clear-space zone" width="200" height="92"></div></div>
+          <div class="bn-clear-text">
+            <h3 class="t-h3">Clear space &amp; minimum size</h3>
+            <p class="t-body-m">The logo must be surrounded by a minimum clear space equal to the height of the letter T in the wordmark. No other elements (text, images, borders) may enter this zone.</p>
+            <div class="bn-mins">
+              <div><p class="t-stat">120 px</p><p class="t-meta">Minimum digital width</p></div>
+              <div><p class="t-stat">30 mm</p><p class="t-meta">Minimum print width</p></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="bn-color-info">
-        <div class="bn-color-name">Teal</div>
-        <div class="bn-color-hex">#3F8487</div>
-        <div class="bn-color-role">Primary brand color. Headings, links, italics, slab backgrounds, logo wordmark.</div>
+    </section>
+
+    <!-- 07 Política de uso -->
+    <section class="bn-sec" id="policy" data-section-theme="cielo" aria-labelledby="policy-h">
+      <div class="bn-wrap">
+        <div class="bn-head">
+          <p class="t-eyebrow">Legal</p>
+          <h2 class="t-h2" id="policy-h">Usage policy</h2>
+          <p class="t-body-l">By downloading or using any Tellus Cooperative Foundation brand asset, you agree to these terms.</p>
+        </div>
+        <div class="bn-clauses">
+          <article><h3 class="t-h4">1. Permitted use</h3><p class="t-body-m">Our brand assets are provided for the purpose of accurately representing, promoting, or referencing Tellus Cooperative Foundation in editorial, educational, and community contexts. Partners, press, chapters, and members may use the assets in accordance with the guidelines on this page without needing prior approval.</p></article>
+          <article><h3 class="t-h4">2. Prohibited use</h3><p class="t-body-m">You may not use the Tellus name, logo, or brand assets in any way that suggests endorsement, sponsorship, or affiliation with your product, service, organization, or event without our prior written consent. You may not use our brand assets on merchandise, in domain names, in advertising, or in any context that could confuse the public about the source or origin of goods or services.</p></article>
+          <article><h3 class="t-h4">3. Right to revoke</h3><p class="t-body-m">Tellus Cooperative Foundation reserves the right to revoke permission to use its brand assets at any time, for any reason, at its sole discretion. If we determine that your use of our brand is misleading, harmful, inappropriate, or inconsistent with our values and mission, we will request that you cease and desist such use. You must comply with any takedown request within 10 business days. Continued unauthorized use after revocation may result in legal action.</p></article>
+          <article><h3 class="t-h4">4. No warranty</h3><p class="t-body-m">The brand assets are provided “as is” without warranty of any kind. Tellus Cooperative Foundation is not liable for any damages arising from the use of its brand assets.</p></article>
+          <article><h3 class="t-h4">5. Modifications</h3><p class="t-body-m">We may update this policy at any time. The current version will always be available at telluscoop.org/brand.</p></article>
+        </div>
+        <p class="bn-contact t-body-m">Last updated: June 2026. For permissions, questions, or to report misuse, contact <a class="btn--link" href="mailto:hola@telluscoop.org">hola@telluscoop.org <span aria-hidden="true">→</span></a></p>
+        <a class="btn btn--secondary" href="/">Back to telluscoop.org</a>
       </div>
-    </div>
-    <div class="bn-color-card">
-      <div class="bn-color-swatch" style="background:#C75A2A; color:#ECE0CC;">
-        <span>#C75A2A</span>
-      </div>
-      <div class="bn-color-info">
-        <div class="bn-color-name">Clay</div>
-        <div class="bn-color-hex">#C75A2A</div>
-        <div class="bn-color-role">Accent color. CTAs, underlines, badges, decorative dots, highlights.</div>
-      </div>
-    </div>
-    <div class="bn-color-card">
-      <div class="bn-color-swatch" style="background:#1F3536; color:var(--cream-90);">
-        <span>#1F3536</span>
-      </div>
-      <div class="bn-color-info">
-        <div class="bn-color-name">Teal Ink</div>
-        <div class="bn-color-hex">#1F3536</div>
-        <div class="bn-color-role">Body text. Darkest shade, the standard reading color on sand backgrounds.</div>
-      </div>
-    </div>
-    <div class="bn-color-card">
-      <div class="bn-color-swatch" style="background:#2A5A5C; color:var(--cream-90);">
-        <span>#2A5A5C</span>
-      </div>
-      <div class="bn-color-info">
-        <div class="bn-color-name">Teal Deep</div>
-        <div class="bn-color-hex">#2A5A5C</div>
-        <div class="bn-color-role">Secondary text, metadata, hover states. Eyebrow labels and stat numbers.</div>
-      </div>
-    </div>
-    <div class="bn-color-card">
-      <div class="bn-color-swatch" style="background:#9E441F; color:#ECE0CC;">
-        <span>#9E441F</span>
-      </div>
-      <div class="bn-color-info">
-        <div class="bn-color-name">Clay Deep</div>
-        <div class="bn-color-hex">#9E441F</div>
-        <div class="bn-color-role">Button hover states. Darker accent, preferred over Clay for small text on light backgrounds (WCAG AA).</div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
+  </main>
 
-<!-- Contrast -->
-<section class="bn-section" id="contrast">
-  <div class="bn-section-head">
-    <div class="eyebrow">Accessibility</div>
-    <h2 class="bn-h2">Contrast guide</h2>
-    <p class="bn-lede">Every combination below has been verified against WCAG 2.1 contrast thresholds. Follow the recommended column to guarantee readability. Reference: <a href="https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html" target="_blank" rel="noopener" style="color:var(--teal-text);text-decoration:underline;">WCAG 2.1 Contrast (Minimum)</a>.</p>
-  </div>
+  <div data-tellus="footer" data-lang="en"></div>
 
-  <div class="bn-matrix">
-    <table>
-      <thead>
-        <tr>
-          <th>Background</th>
-          <th>Foreground</th>
-          <th>Ratio</th>
-          <th>Normal Text<br><span style="font-weight:400;font-size:10px;opacity:0.7;">≥ 4.5:1</span></th>
-          <th>Large Text<br><span style="font-weight:400;font-size:10px;opacity:0.7;">≥ 3:1</span></th>
-          <th>UI / Graphics<br><span style="font-weight:400;font-size:10px;opacity:0.7;">≥ 3:1</span></th>
-          <th>Usage</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td style="background:var(--sand);color:var(--teal-ink);">Sand<br><span style="font-size:10px;opacity:0.6;">#ECE0CC</span></td>
-          <td style="color:var(--teal-ink);">Teal Ink<br><span style="font-size:10px;opacity:0.6;">#1F3536</span></td>
-          <td style="font-weight:600;">10.1:1</td>
-          <td><span class="bn-badge aaa">AAA</span></td>
-          <td><span class="bn-badge aaa">AAA</span></td>
-          <td><span class="bn-badge aaa">AAA</span></td>
-          <td><span class="bn-badge recommended">DEFAULT</span></td>
-        </tr>
-        <tr>
-          <td style="background:var(--sand);color:var(--teal-ink);">Sand<br><span style="font-size:10px;opacity:0.6;">#ECE0CC</span></td>
-          <td style="color:var(--teal-deep);">Teal Deep<br><span style="font-size:10px;opacity:0.6;">#2A5A5C</span></td>
-          <td style="font-weight:600;">5.9:1</td>
-          <td><span class="bn-badge aa">AA</span></td>
-          <td><span class="bn-badge aaa">AAA</span></td>
-          <td><span class="bn-badge aaa">AAA</span></td>
-          <td>Eyebrows, metadata, stat numbers</td>
-        </tr>
-        <tr>
-          <td style="background:var(--sand);color:var(--teal-ink);">Sand<br><span style="font-size:10px;opacity:0.6;">#ECE0CC</span></td>
-          <td style="color:var(--teal-text);">Teal<br><span style="font-size:10px;opacity:0.6;">#3F8487</span></td>
-          <td style="font-weight:600;">3.3:1</td>
-          <td><span class="bn-badge fail">FAIL</span></td>
-          <td><span class="bn-badge aa-lg">OK</span></td>
-          <td><span class="bn-badge aa-lg">OK</span></td>
-          <td>Headings, italics, links (large only)</td>
-        </tr>
-        <tr>
-          <td style="background:var(--sand);color:var(--teal-ink);">Sand<br><span style="font-size:10px;opacity:0.6;">#ECE0CC</span></td>
-          <td style="color:var(--clay);">Clay<br><span style="font-size:10px;opacity:0.6;">#C75A2A</span></td>
-          <td style="font-weight:600;">3.2:1</td>
-          <td><span class="bn-badge fail">FAIL</span></td>
-          <td><span class="bn-badge aa-lg">OK</span></td>
-          <td><span class="bn-badge aa-lg">OK</span></td>
-          <td>Decorative accents only; not body text</td>
-        </tr>
-        <tr>
-          <td style="background:var(--sand);color:var(--teal-ink);">Sand<br><span style="font-size:10px;opacity:0.6;">#ECE0CC</span></td>
-          <td style="color:var(--clay-deep);">Clay Deep<br><span style="font-size:10px;opacity:0.6;">#9E441F</span></td>
-          <td style="font-weight:600;">4.9:1</td>
-          <td><span class="bn-badge aa">AA</span></td>
-          <td><span class="bn-badge aaa">AAA</span></td>
-          <td><span class="bn-badge aaa">AAA</span></td>
-          <td>Small accent text needing AA</td>
-        </tr>
-        <tr>
-          <td style="background:var(--teal);color:var(--cream-90);">Teal<br><span style="font-size:10px;opacity:0.6;">#3F8487</span></td>
-          <td style="color:var(--cream-90);">Sand 90%<br><span style="font-size:10px;opacity:0.6;">rgba(236,224,204,.9)</span></td>
-          <td style="font-weight:600;">3.0:1</td>
-          <td><span class="bn-badge fail">FAIL</span></td>
-          <td><span class="bn-badge aa-lg">OK</span></td>
-          <td><span class="bn-badge aa-lg">OK</span></td>
-          <td>Slab backgrounds (large text only)</td>
-        </tr>
-        <tr>
-          <td style="background:var(--clay);color:var(--sand);">Clay<br><span style="font-size:10px;opacity:0.6;">#C75A2A</span></td>
-          <td style="color:var(--sand);">Sand<br><span style="font-size:10px;opacity:0.6;">#ECE0CC</span></td>
-          <td style="font-weight:600;">3.2:1</td>
-          <td><span class="bn-badge fail">FAIL</span></td>
-          <td><span class="bn-badge aa-lg">OK</span></td>
-          <td><span class="bn-badge aa-lg">OK</span></td>
-          <td>CTA buttons (bold, uppercase text)</td>
-        </tr>
-        <tr>
-          <td style="background:var(--teal-ink);color:var(--cream-90);">Teal Ink<br><span style="font-size:10px;opacity:0.6;">#1F3536</span></td>
-          <td style="color:var(--cream-90);">Sand 90%<br><span style="font-size:10px;opacity:0.6;">rgba(236,224,204,.9)</span></td>
-          <td style="font-weight:600;">8.2:1</td>
-          <td><span class="bn-badge aaa">AAA</span></td>
-          <td><span class="bn-badge aaa">AAA</span></td>
-          <td><span class="bn-badge aaa">AAA</span></td>
-          <td>Pill buttons, mobile nav, badges</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div style="margin-top:32px;background:var(--sand-soft);border:1px solid var(--sand-muted);border-radius:14px;padding:32px;">
-    <h3 style="font-family:var(--serif);font-size:20px;letter-spacing:-0.015em;margin-bottom:12px;">Key rules</h3>
-    <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;font-size:14px;line-height:1.6;">
-      <li><strong>Body text</strong> → always Teal Ink (#1F3536) on Sand. Ratio 10.1:1, passes AAA.</li>
-      <li><strong>Teal (#3F8487) and Clay (#C75A2A) fail AA for body text</strong> on Sand. Use them only on large headings (≥18px bold or ≥24px), UI elements, and decorative accents.</li>
-      <li><strong>Clay buttons</strong> pass AA for large/UI text (3:1) when using bold, uppercase, and sufficient padding.</li>
-      <li><strong>Teal slab backgrounds</strong> require light text at large sizes. For body text on teal, use a darker teal variant or increase font weight.</li>
-      <li><strong>Do not place Clay text on Teal backgrounds</strong> or vice versa, contrast drops below 2:1.</li>
-    </ul>
-  </div>
-</section>
-
-<!-- Guidelines -->
-<section class="bn-section" id="guidelines">
-  <div class="bn-section-head">
-    <div class="eyebrow">Proper Usage</div>
-    <h2 class="bn-h2">Brand guidelines</h2>
-    <p class="bn-lede">These rules protect the integrity and recognizability of the Tellus brand. Follow them whenever you use our name, logo, or colors in any medium.</p>
-  </div>
-
-  <div class="bn-guidelines">
-    <div class="bn-guide-card do">
-      <h3>Do</h3>
-      <ul>
-        <li>Use the official logo files from this page, never recreate or trace the wordmark.</li>
-        <li>Maintain a clear exclusion zone around the logo equal to the height of the letter "T".</li>
-        <li>Use the dark logo on light/neutral backgrounds and the white logo on dark backgrounds.</li>
-        <li>Follow the contrast rules above, body text must be Teal Ink (#1F3536) on Sand (#ECE0CC).</li>
-        <li>Use the brand typefaces: Fraunces for headings, Inter for body, JetBrains Mono for data/code.</li>
-        <li>When referring to us in text, write "Tellus Cooperative" or "Tellus Cooperative Foundation" on first mention.</li>
-        <li>Link back to telluscoop.org when using our brand assets online.</li>
-      </ul>
-    </div>
-    <div class="bn-guide-card dont">
-      <h3>Don't</h3>
-      <ul>
-        <li>Stretch, compress, rotate, or distort the logo in any way.</li>
-        <li>Change the logo colors, use the approved variants only.</li>
-        <li>Add drop shadows, outlines, or effects to the logo.</li>
-        <li>Place the logo on busy, low-contrast, or clashing backgrounds.</li>
-        <li>Use Clay (#C75A2A) or Teal (#3F8487) for body text, they fail WCAG AA at normal sizes.</li>
-        <li>Create your own lockups, sub-brands, or derivative logos without written permission.</li>
-        <li>Use the Tellus brand to imply endorsement, partnership, or sponsorship without our explicit consent.</li>
-      </ul>
-    </div>
-  </div>
-
-  <div style="margin-top:32px;background:var(--sand-soft);border:1px solid var(--sand-muted);border-radius:14px;padding:32px;">
-    <h3 style="font-family:var(--serif);font-size:20px;letter-spacing:-0.015em;margin-bottom:12px;">Clear space & minimum size</h3>
-    <p style="font-size:14px;line-height:1.6;margin-bottom:12px;">The logo must be surrounded by a minimum clear space equal to the height of the letter <strong style="font-family:var(--serif);font-size:18px;color:var(--teal-text);">T</strong> in the wordmark. No other elements (text, images, borders) may enter this zone.</p>
-    <p style="font-size:14px;line-height:1.6;">Minimum print size: 30 mm width. Minimum digital size: 120 px width. Never scale below these thresholds.</p>
-  </div>
-</section>
-
-<!-- Policy -->
-<section class="bn-section" id="policy">
-  <div class="bn-section-head">
-    <div class="eyebrow">Legal</div>
-    <h2 class="bn-h2">Usage policy</h2>
-    <p class="bn-lede">By downloading or using any Tellus Cooperative Foundation brand asset, you agree to these terms.</p>
-  </div>
-
-  <div class="bn-policy">
-    <p><em>1. Permitted use.</em> Our brand assets are provided for the purpose of accurately representing, promoting, or referencing Tellus Cooperative Foundation in editorial, educational, and community contexts. Partners, press, chapters, and members may use the assets in accordance with the guidelines on this page without needing prior approval.</p>
-
-    <p><em>2. Prohibited use.</em> You may not use the Tellus name, logo, or brand assets in any way that suggests endorsement, sponsorship, or affiliation with your product, service, organization, or event without our prior written consent. You may not use our brand assets on merchandise, in domain names, in advertising, or in any context that could confuse the public about the source or origin of goods or services.</p>
-
-    <p><em>3. Right to revoke.</em> Tellus Cooperative Foundation reserves the right to revoke permission to use its brand assets at any time, for any reason, at its sole discretion. If we determine that your use of our brand is misleading, harmful, inappropriate, or inconsistent with our values and mission, we will request that you cease and desist such use. <strong>You must comply with any takedown request within 10 business days.</strong> Continued unauthorized use after revocation may result in legal action.</p>
-
-    <p><em>4. No warranty.</em> The brand assets are provided "as is" without warranty of any kind. Tellus Cooperative Foundation is not liable for any damages arising from the use of its brand assets.</p>
-
-    <p><em>5. Modifications.</em> We may update this policy at any time. The current version will always be available at <a href="https://telluscoop.org/brand" style="color:var(--teal-text);">telluscoop.org/brand</a>.</p>
-
-    <p style="margin-top:24px;font-size:13px;color:var(--teal-deep);opacity:0.7;">Last updated: June 2026. For permissions, questions, or to report misuse, contact <a href="mailto:hola@telluscoop.org" style="color:var(--teal-text);">hola@telluscoop.org</a>.</p>
-  </div>
-</section>
-
-<!-- Footer -->
-<footer class="bn-footer">
-  <a class="bn-back-home" href="/">← Back to telluscoop.org</a>
-  <p>© 2026 Tellus Cooperative Foundation · New York, NY</p>
-</footer>
-
-<script src="/theme.js"></script>
+  <script src="/shared/site.js"></script>
+  <script>
+    // Index in the cover: mark the section in view (accent colour = current, still just a link)
+    (function () {
+      var links = [].slice.call(document.querySelectorAll('.bn-index a'));
+      var secs = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
+      function update() {
+        var cur = 0, line = window.innerHeight * 0.35;
+        secs.forEach(function (s, i) { if (s && s.getBoundingClientRect().top <= line) cur = i; });
+        links.forEach(function (a, i) { if (i === cur) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current'); });
+      }
+      var q = false;
+      window.addEventListener('scroll', function () { if (q) return; q = true; requestAnimationFrame(function () { q = false; update(); }); }, { passive: true });
+      update();
+    })();
+  </script>
 </body>
 </html>

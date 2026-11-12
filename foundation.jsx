@@ -1,901 +1,309 @@
-// Foundation system · refined, microinteractions, scroll reveals
-const { useState, useEffect, useRef, useCallback } = React;
+// Tellus Home (/) — sections 01–08 of the Figma redesign (frames 8:1300 / 9:2928).
+// Nav, city ribbon, final CTA, footer and the Join modal are the shared shell from /shared/site.js;
+// this app renders the placeholders and the shell fills them. Compiled by `npm run build` (esbuild)
+// into dist/home.js — there is no in-browser Babel any more.
+const { useState, useEffect, useRef } = React;
 
-// === Hooks ===
-const useScrollProgress = () => {
-  const [p, setP] = useState(0);
+const URL_YT_PLAYLISTS = 'https://www.youtube.com/@telluscoop/playlists';
+const BEEHIIV = 'https://telluscoop.beehiiv.com';
+
+// Static fallback shown instantly (and if /api/articles is down): the six articles of the Figma frame.
+const FALLBACK_ARTICLES = [
+  { kind: 'Blockchain', date: '11 nov 2026', title: 'Soroban en práctica: entiende y despliega un smart contract, sin saber programar', excerpt: 'Stellar Academy invita a una sesión online el jueves 12 de noviembre, de 12:30 a 13:30 (hora de Chile), en el Discord de Tellus Cooperative, junto a iDEA UFRO y la Universidad de La Frontera.' },
+  { kind: 'Stellar', date: '11 nov 2026', title: 'Stellar en español: WalletConnect Pay llega a LOBSTR y Bell se prepara para mainnet', excerpt: 'LOBSTR es la primera wallet con WalletConnect Pay en Stellar (pagas en USDC sin XLM de fee) y los validadores votan Protocol 30 (Bell) el 23 de noviembre.' },
+  { kind: 'Blockchain', date: '10 nov 2026', title: 'De la mecánica a Byetery: Cristian Medina en Stellar Academy', excerpt: 'Estudiaba Ingeniería Civil Industrial mención Mecánica en la Universidad de La Frontera y ya conocía blockchain, pero no sabía cómo aplicarla a su vida. En Stellar Academy salió de su zona de confort y construyó un proyecto de trazabilidad de baterías.' },
+  { kind: 'Blockchain', date: '10 nov 2026', title: '«Yo te digo que te atrevas»: Carla Seguel y Stellar Academy', excerpt: 'Llegó al programa sin interés en blockchain. Hoy estudia Ingeniería Civil Industrial en la Universidad de La Frontera y desarrolla un proyecto que antes no se creía capaz de lograr.' },
+  { kind: 'IA', date: '10 nov 2026', title: 'IA esta semana: Gemini Omni 1.2 Flash, Images 2.6 y OpenAI compra Pierre', excerpt: 'Google bajó el precio del video con Omni 1.2 Flash, OpenAI lanzó Images 2.6 y anunció la compra de Pierre, y Mistral abrió Managed Agents en Studio.' },
+  { kind: 'Blockchain', date: '09 nov 2026', title: 'De cero a cien en blockchain: Diego Poveda y Local402', excerpt: 'Llegó a Stellar Academy sin saber de blockchain. Hoy construye pagos en tu moneda para personas y agentes de IA sobre Stellar.' },
+].map((a, i) => ({ ...a, id: i, link: BEEHIIV, thumb: `/shared/img/articles/a${i + 1}.webp`, tag: tagFor(a.kind) }));
+
+function tagFor(cat = '') {
+  if (/\bia\b|inteligencia|gpt|gemini|claude|llm/i.test(cat)) return 'ia';
+  if (/blockchain|stellar|crypto|defi|bitcoin|web3/i.test(cat)) return 'blockchain';
+  return 'newsletter';
+}
+
+const PROGRAM_MASCOTS = ['bloques', 'astronauta', 'lupa'];
+
+const PLAYLISTS = [
+  { title: 'Hola Stellar · Aprende Stellar desde cero', list: 'PLLgyZ3kOWK4O-Lp1oRBUWGGbuW9ksLQc-', vid: 'RfRx7C5twi0', url: 'https://www.youtube.com/watch?v=RfRx7C5twi0&list=PLLgyZ3kOWK4O-Lp1oRBUWGGbuW9ksLQc-&index=3' },
+  { title: 'Guía Completa de Stellar Quest', list: 'PLLgyZ3kOWK4OfidwhewcUJOsr2WG3j0nv', vid: '-rSLo0rioaM' },
+  { title: 'Talleres', list: 'PLLgyZ3kOWK4MJeY7lqpYJ91K5kYSTqj5z', vid: 'X2md53SSNOA' },
+  { title: 'Charlas Educativas', list: 'PLLgyZ3kOWK4MZk7iDpfQfwDLNtD5VPeX8', vid: 'hLtreVEM1yo' },
+  { title: 'Charlas Stellares', list: 'PLLgyZ3kOWK4MkXrQni_xlO9B9Wi9sRoSx', vid: 'poGbTGRE0Nw' },
+  { title: 'Introducción a Tellus Cooperative', list: 'PLLgyZ3kOWK4PZ33fsUOJa6PtLI8Rv0Itw', vid: '3erjjWHErAo' },
+  { title: 'InstaWards', list: 'PLLgyZ3kOWK4Og0k1cTBJHCNc975drI5ru', vid: 'H9N3xA8eRII', url: 'https://www.youtube.com/watch?v=H9N3xA8eRII&list=PLLgyZ3kOWK4Og0k1cTBJHCNc975drI5ru&index=3' },
+];
+
+const Arrow = () => <span aria-hidden="true">→</span>;
+
+const SectionHead = ({ eyebrow, title, sub, id, children }) => (
+  <div className="hm-head">
+    <div className="hm-head-text">
+      <p className="t-eyebrow hm-eyebrow">{eyebrow}</p>
+      <h2 className="t-h2" id={id}>{title}</h2>
+      {sub && <p className="t-body-l hm-sub">{sub}</p>}
+    </div>
+    {children}
+  </div>
+);
+
+const useMedia = (q) => {
+  const [m, setM] = useState(() => (window.matchMedia ? window.matchMedia(q).matches : false));
   useEffect(() => {
-    const onScroll = () => {
-      const h = document.documentElement;
-      const max = h.scrollHeight - h.clientHeight;
-      setP(max > 0 ? Math.min(1, h.scrollTop / max) : 0);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-  return p;
+    if (!window.matchMedia) return;
+    const mq = window.matchMedia(q);
+    const on = () => setM(mq.matches);
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, [q]);
+  return m;
 };
 
-const useReveal = () => {
+// Placeholders that /shared/site.js fills (ribbon, final CTA, footer).
+const ShellSlot = ({ kind, theme }) => {
   const ref = useRef(null);
-  const [shown, setShown] = useState(false);
-  useEffect(() => {
-    if (!ref.current) return;
-    const io = new IntersectionObserver((es) => {
-      es.forEach(e => { if (e.isIntersecting) { setShown(true); io.disconnect(); }});
-    }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
-    io.observe(ref.current);
-    return () => io.disconnect();
-  }, []);
-  return [ref, shown];
+  useEffect(() => { if (window.TellusShell && ref.current) window.TellusShell.mount(ref.current.parentNode); }, []);
+  return <div ref={ref} data-tellus={kind} data-lang="auto" data-section-theme={theme} />;
 };
 
-const Reveal = ({ children, delay = 0, as = 'div', className = '', ...rest }) => {
-  const [ref, shown] = useReveal();
-  const Tag = as;
-  return (
-    <Tag ref={ref} className={`reveal ${shown ? 'is-in' : ''} ${className}`} style={{ transitionDelay: `${delay}ms` }} {...rest}>
-      {children}
-    </Tag>
-  );
-};
-
-// Animated counter
-const useCountUp = (target, run) => {
-  const [v, setV] = useState(0);
-  useEffect(() => {
-    if (!run) return;
-    const num = parseFloat(String(target).replace(/[^\d.]/g, '')) || 0;
-    const dur = 1400;
-    const t0 = performance.now();
-    let raf;
-    const step = (t) => {
-      const k = Math.min(1, (t - t0) / dur);
-      const ease = 1 - Math.pow(1 - k, 3);
-      setV(num * ease);
-      if (k < 1) raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [target, run]);
-  return v;
-};
+const channelIcon = (name) => <span className="hm-chan-ico" aria-hidden="true"><span style={{ WebkitMaskImage: `url(/shared/img/social/${name}.svg)`, maskImage: `url(/shared/img/social/${name}.svg)` }} /></span>;
 
 const FoundationSystem = () => {
-  const { lang, setLang, t } = window.useLang();
-  const [joinOpen, setJoinOpen] = useState(false);
-  const [activeProgram, setActiveProgram] = useState(0);
-  const [rssKey, setRssKey] = useState(0);
+  const { lang, t } = window.useLang();
+  const isMobile = useMedia('(max-width: 767px)');
   const [tab, setTab] = useState('all');
   const [page, setPage] = useState(1);
-  const [navScrolled, setNavScrolled] = useState(false);
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [mapSvg, setMapSvg] = useState('');
-  const sp = useScrollProgress();
-  const heroRef = useRef(null);
-  const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
-  const [theme, setTheme] = useState(() => document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+  const [articlesAll, setArticlesAll] = useState(FALLBACK_ARTICLES);
+  const mounted = useRef(false);
 
-  // Follow the OS setting live, but only while the visitor has not picked a theme.
+  // Articles come from our own endpoint (server-side RSS fetch) — no public CORS proxies.
   useEffect(() => {
-    const mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
-    if (!mq || !mq.addEventListener) return;
-    const onChange = (e) => {
-      let stored = null;
-      try { stored = localStorage.getItem('tellus-theme'); } catch {}
-      if (stored === 'dark' || stored === 'light') return;
-      const next = e.matches ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', next);
-      setTheme(next);
-    };
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, []);
-
-  const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    try { localStorage.setItem('tellus-theme', next); } catch {}
-    setTheme(next);
-  };
-
-  useEffect(() => {
-    const onScroll = () => setNavScrolled(window.scrollY > 24);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  useEffect(() => {
-    fetch('uploads/mapa latam.svg')
-      .then(r => r.text())
-      .then(svg => setMapSvg(svg))
-      .catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    const RSS = 'https://rss.beehiiv.com/feeds/NRVrKCDABF.xml';
-    const CACHE_KEY = 'tellus_rss_v1';
-    // Short freshness window so new Beehiiv posts show up within the hour.
-    const TTL = 60 * 60 * 1000;
-    const proxies = [
-      '',
-      'https://api.allorigins.win/raw?url=',
-      'https://corsproxy.io/?url=',
-      'https://thingproxy.freeboard.io/fetch/',
-    ];
-
-    const tagFor = (cat = '') => {
-      if (/\bia\b|inteligencia|gpt|gemini|claude|llm/i.test(cat)) return 'ai';
-      if (/blockchain|stellar|crypto|defi|bitcoin|web3/i.test(cat)) return 'blk';
-      if (/govern|gobern/i.test(cat)) return 'gov';
-      return 'fld';
-    };
-    const fmtDate = (str) => {
-      const d = new Date(str);
-      return isNaN(d) ? str : d.toLocaleDateString('es-CL', { day: '2-digit', month: 'short', year: 'numeric' });
-    };
-    const getText = (el, tag) => el.getElementsByTagName(tag)[0]?.textContent?.trim() || '';
-
-    const parseXml = (xml) => {
-      const doc = new DOMParser().parseFromString(xml, 'text/xml');
-      const items = Array.from(doc.querySelectorAll('item'));
-      items.sort((a, b) => new Date(getText(b, 'pubDate')) - new Date(getText(a, 'pubDate')));
-      return items.map((item, i) => {
-        const title = getText(item, 'title');
-        const description = getText(item, 'description');
-        const link = getText(item, 'link');
-        const rawDate = getText(item, 'pubDate');
-        const pubTs = new Date(rawDate).getTime();
-        const date = fmtDate(rawDate);
-        const cats = Array.from(item.getElementsByTagName('category')).map(c => c.textContent.trim());
-        const kind = cats[0] || 'Field notes';
-        const enc = item.getElementsByTagName('enclosure')[0];
-        const thumbnail = enc?.getAttribute('url') || undefined;
-        return { id: i + 1, title, excerpt: description, link, date, pubTs: isNaN(pubTs) ? null : pubTs, kind, tag: tagFor(kind), thumbnail };
-      });
-    };
-
-    const fetchXml = async () => {
-      for (const proxy of proxies) {
-        try {
-          const url = proxy ? proxy + encodeURIComponent(RSS) : RSS;
-          const r = await fetch(url, { cache: 'no-store' });
-          if (!r.ok) continue;
-          const t = await r.text();
-          if (t.includes('<item>')) return t;
-        } catch {}
-      }
-      return null;
-    };
-
     let cancelled = false;
-    let cached = null;
-    try { cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); } catch {}
-    const cacheUsable = cached && Array.isArray(cached.data) && cached.data.length;
-    // Older cache entries (before pubTs existed) are shown but always refetched.
-    const cacheFresh = cacheUsable && cached.data[0].pubTs !== undefined && Date.now() - cached.ts < TTL;
-    if (cacheUsable) setArticlesAll(cached.data);
-    if (cacheFresh) return;
-
-    fetchXml().then(xml => {
-      // On failure keep whatever is on screen (stale cache or placeholders).
-      if (!xml || cancelled) return;
-      const mapped = parseXml(xml);
-      if (!mapped.length) return;
-      setArticlesAll(mapped);
-      try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: mapped })); } catch {}
-    });
+    fetch('/api/articles')
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('articles'))))
+      .then(({ items }) => {
+        if (cancelled || !Array.isArray(items) || !items.length) return;
+        setArticlesAll(items.map((a, i) => ({
+          id: i, kind: a.category || 'Newsletter', tag: tagFor(a.category), title: a.title, excerpt: a.excerpt,
+          link: a.link, thumb: a.thumbnail || '', pubTs: Date.parse(a.pubDate) || null,
+        })));
+      })
+      .catch(() => {}); // keep the static fallback
     return () => { cancelled = true; };
-  }, [rssKey]);
-
-
-  const onHeroMove = useCallback((e) => {
-    const r = heroRef.current?.getBoundingClientRect();
-    if (!r) return;
-    setMouse({ x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height });
   }, []);
 
-  const navItems = [
-    ['#programs', t('navPrograms')],
-    ['#articles', t('navArticles')],
-    ['#courses', t('navCourses')],
-    ['/hub', t('navHub')],
-    ['/resources', t('navResources')],
-    ['#about', t('navAbout')],
-  ];
-  const YT_PLAYLISTS = 'https://www.youtube.com/@telluscoop/playlists';
-  const AMBASSADORS_URL = lang === 'en' ? '/en/programs/stellar-chile/ambassadors' : '/programs/stellar-chile/ambassadors';
-  const COC_URL = lang === 'en' ? '/en/code-of-conduct' : '/code-of-conduct';
+  // Language/page title helpers for the shell are handled by site.js; keep <html lang> in sync (useLang does it).
+  useEffect(() => { mounted.current = true; }, []);
 
+  const AMBASSADORS_URL = lang === 'es' ? '/programs/stellar-chile/ambassadors' : '/en/programs/stellar-chile/ambassadors';
+  // TODO(spec §15 Q7): the three "Learn more" links need confirmed destinations; these are the ones the site already used.
   const programs = [
-    { code: '01', title: t('prog1Title'), body: t('prog1Body'), stat: 4548, statSuffix: '+', statLabel: t('prog1StatLabel'), img: 'uploads/cooperative education.jpg', href: YT_PLAYLISTS, external: true },
-    { code: '02', title: t('prog2Title'), body: t('prog2Body'), stat: 209, statSuffix: '+', statLabel: t('prog2StatLabel'), img: 'uploads/project incubation.jpg', href: AMBASSADORS_URL },
-    { code: '03', title: t('prog3Title'), body: t('prog3Body'), stat: 191, statSuffix: '+', statLabel: t('prog3StatLabel'), img: 'uploads/public research.jpg', href: '/resources' },
+    { code: '01', title: t('prog1Title'), body: t('prog1Body'), stat: '4,548+', statLabel: t('prog1StatLabel'), href: URL_YT_PLAYLISTS, external: true },
+    { code: '02', title: t('prog2Title'), body: t('prog2Body'), stat: '209+', statLabel: t('prog2StatLabel'), href: AMBASSADORS_URL },
+    { code: '03', title: t('prog3Title'), body: t('prog3Body'), stat: '191+', statLabel: t('prog3StatLabel'), href: '/resources' },
   ];
 
-  const [articlesAll, setArticlesAll] = useState([
-    { id: 1, kind: 'Research', tag: 'res', read: '10 min read', date: '04 May 2026', title: 'On data sovereignty: a cooperative reading of the Global South\'s digital infrastructure.', excerpt: 'A long-form essay on why the next decade of digital policy in Latin America will be defined less by what platforms we use and more by who owns the rails underneath them.', author: 'Sofía Aravena · with C. Restrepo', role: 'Council · Treasury & Research', feat: true },
-    { id: 2, kind: 'Field notes', tag: 'fld', read: '6 min read', date: '02 May', title: 'Cohort 04, week one: what 23 students taught us about cooperative pedagogy.' },
-    { id: 3, kind: 'Education', tag: 'edu', read: '8 min read', date: '28 Apr', title: 'Drafting our first cooperative charter: how 412 members shaped the founding document.' },
-    { id: 4, kind: 'Research', tag: 'res', read: '12 min read', date: '22 Apr', title: 'Mapping cooperative AI: a directory of 47 LATAM projects building outside Big Tech.' },
-  ]);
-  const TAB_FILTERS = { 'all': null, 'blockchain': 'blk', 'ia': 'ai', 'newsletter': 'fld' };
-  const articles = TAB_FILTERS[tab] ? articlesAll.filter(a => a.tag === TAB_FILTERS[tab]) : articlesAll;
-  const PER_PAGE = 6;
-  const totalPages = Math.max(1, Math.ceil(articles.length / PER_PAGE));
-  const pageArticles = articles.slice((page - 1) * PER_PAGE, page * PER_PAGE);
-  // "New" = published within the last 14 days (pubTs comes from the RSS pubDate).
-  const NEW_WINDOW_MS = 14 * 24 * 3600 * 1000;
-  const isNewArticle = (a) => typeof a.pubTs === 'number' && Date.now() - a.pubTs < NEW_WINDOW_MS;
-  const DATE_LOCALES = { en: 'en-US', es: 'es-CL', pt: 'pt-BR' };
-  const articleDate = (a) => a.pubTs
-    ? new Date(a.pubTs).toLocaleDateString(DATE_LOCALES[lang] || 'en-US', { day: '2-digit', month: 'short', year: 'numeric' })
-    : a.date;
+  const FILTERS = [['all', t('filterAll')], ['blockchain', t('filterBlockchain')], ['ia', t('filterIa')], ['newsletter', t('filterNewsletter')]];
+  const filtered = tab === 'all' ? articlesAll : articlesAll.filter((a) => a.tag === tab);
+  const perPage = isMobile ? 3 : 6;
+  const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
+  const cur = Math.min(page, totalPages);
+  const pageArticles = filtered.slice((cur - 1) * perPage, cur * perPage);
+  const locale = { en: 'en-US', es: 'es-CL', pt: 'pt-BR' }[lang] || 'en-US';
+  const fmt = (a) => (a.pubTs ? new Date(a.pubTs).toLocaleDateString(locale, { day: '2-digit', month: 'short', year: 'numeric' }) : a.date);
+  const goPage = (p) => { setPage(p); const el = document.getElementById('articles'); if (el) el.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); };
+  const pageNums = (() => {
+    const w = 4; let s = Math.max(1, cur - 1); const e = Math.min(totalPages, s + w - 1); s = Math.max(1, e - w + 1);
+    return Array.from({ length: e - s + 1 }, (_, i) => s + i);
+  })();
 
   const partners = [
-    { name: 'Stellar Foundation', logo: 'uploads/Stellar.svg' },
-    { name: 'Filecoin', logo: 'uploads/Filecoin.svg' },
-    { name: 'Ethereum', logo: 'uploads/Ethereum_logo.svg' },
-    { name: 'Avalanche', logo: 'uploads/Avalanche_Blockchain_Logo.svg' },
-    { name: 'PizzaDAO', logo: 'uploads/pizzaDao-Logo.svg' },
-    { name: 'IdeaUFRO', logo: 'uploads/IdeaUfro.svg' },
+    { name: 'Stellar Foundation', kind: 'img', src: '/shared/img/partners/stellar-foundation.png', w: 128, h: 32 },
+    { name: 'Filecoin', kind: 'img', src: '/shared/img/partners/filecoin.svg', w: 32, h: 32, label: true },
+    { name: 'Ethereum', kind: 'img', src: '/shared/img/partners/ethereum.svg', w: 20, h: 32, label: true },
+    { name: 'Avalanche', kind: 'img', src: '/shared/img/partners/avalanche.svg', w: 32, h: 32, label: true },
+    { name: 'PizzaDAO', kind: 'mask', src: '/shared/img/partners/pizzadao-mask.svg', w: 150, h: 24 },
+    { name: 'iDEA UFRO', kind: 'mask', src: '/shared/img/partners/idea-ufro-mask.png', w: 71, h: 32 },
   ];
 
-  const playlists = [
-    { title: 'Hola Stellar · Aprende Stellar desde cero', list: 'PLLgyZ3kOWK4O-Lp1oRBUWGGbuW9ksLQc-', vid: 'RfRx7C5twi0', url: 'https://www.youtube.com/watch?v=RfRx7C5twi0&list=PLLgyZ3kOWK4O-Lp1oRBUWGGbuW9ksLQc-&index=3' },
-    { title: 'Guía Completa de Stellar Quest', list: 'PLLgyZ3kOWK4OfidwhewcUJOsr2WG3j0nv', vid: '-rSLo0rioaM' },
-    { title: 'Talleres', list: 'PLLgyZ3kOWK4MJeY7lqpYJ91K5kYSTqj5z', vid: 'X2md53SSNOA' },
-    { title: 'Charlas Educativas', list: 'PLLgyZ3kOWK4MZk7iDpfQfwDLNtD5VPeX8', vid: 'hLtreVEM1yo' },
-    { title: 'Charlas Stellares', list: 'PLLgyZ3kOWK4MkXrQni_xlO9B9Wi9sRoSx', vid: 'poGbTGRE0Nw' },
-    { title: 'Introducción a Tellus Cooperative', list: 'PLLgyZ3kOWK4PZ33fsUOJa6PtLI8Rv0Itw', vid: '3erjjWHErAo' },
-    { title: 'InstaWards', list: 'PLLgyZ3kOWK4Og0k1cTBJHCNc975drI5ru', vid: 'H9N3xA8eRII', url: 'https://www.youtube.com/watch?v=H9N3xA8eRII&list=PLLgyZ3kOWK4Og0k1cTBJHCNc975drI5ru&index=3' },
+  const channels = [
+    { icon: 'x', name: 'X', desc: '@TellusCoop', href: 'https://x.com/TellusCoop' },
+    { icon: 'instagram', name: 'Instagram', desc: '@telluscooperative', href: 'https://www.instagram.com/telluscooperative/' },
+    { icon: 'youtube', name: 'YouTube', desc: '@telluscoop', href: 'https://www.youtube.com/@telluscoop' },
+    { icon: 'linkedin', name: 'LinkedIn', desc: 'tellus-cooperative', href: 'https://www.linkedin.com/company/tellus-cooperative/' },
+    { icon: 'whatsapp', name: 'WhatsApp', desc: t('wallWa').replace('WhatsApp · ', ''), href: 'https://chat.whatsapp.com/FsNIUPsmNCl2YJkQi5r4p4' },
+    // TODO(spec §15 Q4): confirm the Discord invite does not expire.
+    { icon: 'discord', name: 'Discord', desc: t('wallSrv'), href: 'https://discord.gg/Fy2SgR3XRu' },
   ];
 
   return (
-    <div className="fs-root">
-      {/* Scroll progress bar */}
-      <div className="fs-scroll-bar" style={{ transform: `scaleX(${sp})` }}></div>
-
-      {/* NAV */}
-      <nav className={`fs-nav ${navScrolled ? 'is-scrolled' : ''}`}>
-        <div className="fs-nav-inner">
-          <a className="fs-mark" href="/" aria-label="Tellus Cooperative home">
-            <img src="uploads/tellus.svg" alt="Tellus Cooperative" className="fs-mark-img fs-logo-light" />
-            <img src="/policies/assets/tellus-sand.svg" alt="Tellus Cooperative" className="fs-mark-img fs-logo-dark" />
-          </a>
-          <div className="fs-nav-links">
-            {navItems.map(([href, label]) => (
-              <a key={href} href={href}>
-                <span>{label}</span>
-                <span className="fs-nav-underline" aria-hidden="true"></span>
-              </a>
-            ))}
-            <window.LangSwitcher lang={lang} setLang={setLang} />
-            <ThemeToggle theme={theme} onToggle={toggleTheme} t={t} />
-            <button className="fs-btn-pill-sm" onClick={() => setJoinOpen(true)}>
-              <span>{t('navJoin')}</span>
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            </button>
-          </div>
-          <button
-            className={`fs-nav-burger ${mobileNavOpen ? 'is-open' : ''}`}
-            onClick={() => setMobileNavOpen(!mobileNavOpen)}
-            aria-label="Menu"
-          >
-            <span></span><span></span><span></span>
-          </button>
-        </div>
-        <div className={`fs-nav-mobile ${mobileNavOpen ? 'is-open' : ''}`}>
-          {navItems.map(([href, label]) => (
-            <a key={href} href={href} onClick={() => setMobileNavOpen(false)}>{label}</a>
-          ))}
-          <div className="fs-nav-mobile-lang">
-            <window.LangSwitcher lang={lang} setLang={(l) => { setLang(l); setMobileNavOpen(false); }} />
-            <ThemeToggle theme={theme} onToggle={toggleTheme} t={t} />
-          </div>
-          <button className="fs-btn-primary" onClick={() => { setMobileNavOpen(false); setJoinOpen(true); }}>
-            <span>{t('navJoinFull')}</span>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          </button>
-        </div>
-      </nav>
-
-      {/* HERO */}
-      <section className="fs-hero" ref={heroRef} onMouseMove={onHeroMove}>
-        <div className="fs-hero-grid">
-          <div className="fs-hero-text">
-            <Reveal className="fs-hero-eye">
-              <span className="eyebrow">{t('heroEyebrow')}</span>
-            </Reveal>
-            <h1 className="fs-h1">
-              <Reveal delay={50} as="span" className="fs-h1-line">{t('heroLine1')}</Reveal>
-              <Reveal delay={250} as="span" className="fs-h1-line"><em>{t('heroLine2').replace(/\.$/, '')}</em><span className="fs-h1-dot" aria-hidden="true"></span></Reveal>
-            </h1>
-            <Reveal delay={450}>
-              <p className="fs-lede">{t('heroLede')}</p>
-            </Reveal>
-            <Reveal delay={600}>
-              <div className="fs-hero-cta">
-                <button className="fs-btn-primary" onClick={() => setJoinOpen(true)}>
-                  <span>{t('heroCta')}</span>
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </button>
-                <a className="fs-btn-secondary" href="#programs">
-                  <span>{t('heroSeePrograms')}</span>
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9l6-6M4 3h5v5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </a>
-              </div>
-            </Reveal>
-          </div>
-          <Reveal delay={300} className="fs-hero-figure-wrap">
-            <div className="fs-hero-figure">
-              {mapSvg && (
-                <div
-                  className="fs-hero-map"
-                  dangerouslySetInnerHTML={{ __html: mapSvg }}
-                />
-              )}
+    <>
+      {/* 01 HERO — beige (Claro) with the full LatAm map (Figma 97:8079) */}
+      <section className="hm-hero" data-section-theme="claro" aria-labelledby="hero-h">
+        <div className="hm-hero-in">
+          <div className="hm-hero-text">
+            <p className="t-eyebrow hm-eyebrow">{t('heroEyebrow')}</p>
+            <h1 className="t-display" id="hero-h">{t('heroLine1')} <em>{t('heroLine2')}</em></h1>
+            <p className="t-body-l hm-lede">{t('heroLede')}</p>
+            <div className="hm-actions">
+              <button type="button" className="btn btn--primary" data-join>{t('heroCta')}</button>
+              <a className="btn btn--link" href="#programs">{t('heroSeePrograms')} <Arrow /></a>
             </div>
-          </Reveal>
-        </div>
-        <div className="fs-hero-marquee" aria-hidden="true">
-          <div className="fs-marquee-track">
-            {Array(2).fill(0).map((_, i) => (
-              <div key={i} className="fs-marquee-row">
-                <span>Santiago</span><span>·</span><span>Mexico City</span><span>·</span><span>São Paulo</span><span>·</span>
-                <span>Buenos Aires</span><span>·</span><span>Bogotá</span><span>·</span><span>Lima</span><span>·</span>
-                <span>Montevideo</span><span>·</span><span>Quito</span><span>·</span><span>Medellín</span><span>·</span>
-                <span>Porto Alegre</span><span>·</span>
-              </div>
-            ))}
+          </div>
+          <div className="hm-hero-map">
+            <img src="/shared/img/map-latam-full.svg" alt="" width="538" height="620" fetchPriority="high" />
           </div>
         </div>
       </section>
 
-      {/* STATS */}
-      <Reveal as="section" className="fs-stats-strip">
-        <Stat num={4548} suffix="+" label={t('statSubscribers')} />
-        <Stat num={12} suffix="+" label={t('statCountries')} />
-        <Stat num={209} suffix="+" label={t('statProjects')} />
-        <Stat num={100} suffix="%" unit={t('statOpen')} />
-      </Reveal>
+      <ShellSlot kind="ribbon" theme="naranjo" />
 
-      {/* MISSION SLAB */}
-      <section className="fs-slab" id="about">
-        <div className="fs-slab-bg" aria-hidden="true"></div>
-        <div className="fs-slab-inner">
-          <Reveal className="fs-slab-single">
-            <div className="eyebrow on-teal">{t('missionEyebrow')}</div>
-            <p className="fs-slab-text" dangerouslySetInnerHTML={{ __html: t('missionText') }} />
-          </Reveal>
-        </div>
-      </section>
-
-      {/* PARTNERS */}
-      <section id="partners" className="fs-partners">
-        <Reveal className="fs-section-head">
-          <div className="eyebrow">{t('partnersEyebrow')}</div>
-          <h2 className="fs-h2">{t('partnersH2')}</h2>
-        </Reveal>
-        <div className="fs-partners-ticker">
-          <div className="fs-partners-track">
-            {[...partners, ...partners, ...partners].map((p, i) => (
-              <div key={i} className="fs-partner-item">
-                <img src={p.logo} alt={p.name} className="fs-partner-logo" />
-                <span className="fs-partner-name">{p.name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* PROGRAMS */}
-      <section id="programs" className="fs-programs">
-        <Reveal className="fs-section-head">
-          <div className="eyebrow">{t('programsEyebrow')}</div>
-          <h2 className="fs-h2">{t('programsH2')}</h2>
-          <p className="fs-section-sub">{t('programsSub')}</p>
-        </Reveal>
-        <div className="fs-programs-grid">
-          {programs.map((p, i) => (
-            <Reveal
-              key={i}
-              delay={i * 120}
-              as="article"
-              className={`fs-program-card ${activeProgram === i ? 'is-active' : ''}`}
-              onMouseEnter={() => setActiveProgram(i)}
-            >
-              <div className="fs-program-img">
-                <img src={p.img} alt={p.title} className="fs-program-photo" />
-                <span className="fs-program-num-overlay">{p.code}</span>
-              </div>
-              <div className="fs-program-inner">
-                <h3 className="fs-program-title">{p.title}</h3>
-                <p className="fs-program-body">{p.body}</p>
-                <div className="fs-program-stat">
-                  <CountStat target={p.stat} suffix={p.statSuffix} label={p.statLabel} />
-                </div>
-                <a
-                  className="fs-program-link"
-                  href={p.href}
-                  {...(p.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                >
-                  <span>{t('progLearnMore')}</span>
-                  <span className="fs-arrow">→</span>
-                </a>
-              </div>
-            </Reveal>
+      {/* 02 DATOS — final figures live in the HTML (no count-up, never zeros) */}
+      <section className="hm-stats" aria-label={t('statSubscribers')}>
+        <ul className="hm-stats-in">
+          {[['4,548+', t('statSubscribers')], ['12+', t('statCountries')], ['209+', t('statProjects')], ['100%', t('statOpen')]].map(([n, l]) => (
+            <li key={l}><p className="t-stat">{n}</p><p className="t-meta">{l}</p></li>
           ))}
+        </ul>
+      </section>
+
+      {/* 03 MISIÓN */}
+      <section className="hm-mission" id="about" data-section-theme="claro" aria-label={t('missionEyebrow')}>
+        <div className="hm-mission-in">
+          <p className="t-eyebrow">{t('missionEyebrow')}</p>
+          <p className="t-lead" dangerouslySetInnerHTML={{ __html: t('missionText') }} />
         </div>
       </section>
 
-      {/* HIGHLIGHTED ARTICLES */}
-      <section id="articles" className="fs-articles">
-        <Reveal className="fs-section-head fs-articles-head">
-          <div>
-            <div className="eyebrow">{t('articlesEyebrow')}</div>
-            <h2 className="fs-h2">{t('articlesH2')}</h2>
-          </div>
-          <div style={{display:'flex',alignItems:'center',gap:16}}>
-            <button className="fs-art-tab" onClick={() => { localStorage.removeItem('tellus_rss_v1'); setRssKey(k => k + 1); setTab('all'); setPage(1); }} title={t('articlesRefresh')} aria-label={t('articlesRefresh')} style={{fontSize:11,padding:'6px 10px',display:'inline-flex',alignItems:'center',gap:4,border:'1px solid var(--line-strong)',borderRadius:999,background:'transparent',color:'var(--text-2)',cursor:'pointer'}}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-            </button>
-            <div className="fs-articles-tabs" role="tablist">
-            {['all', 'blockchain', 'ia', 'newsletter'].map(t => (
-              <button key={t} className={`fs-art-tab ${tab === t ? 'is-on' : ''}`} onClick={() => { setTab(t); setPage(1); }}>
-                <span>{t}</span>
-              </button>
+      {/* 04 ALIADOS — static grid */}
+      <section className="hm-partners" id="partners" aria-labelledby="partners-h">
+        <div className="hm-wrap">
+          <SectionHead eyebrow={t('partnersEyebrow')} title={t('partnersH2')} id="partners-h" />
+          <ul className="hm-partners-grid">
+            {partners.map((p) => (
+              <li key={p.name} className="hm-partner">
+                {p.kind === 'img'
+                  ? <img src={p.src} alt={p.name} width={p.w} height={p.h} loading="lazy" />
+                  : <span className="hm-partner-mask" role="img" aria-label={p.name} style={{ width: p.w, height: p.h, WebkitMaskImage: `url(${p.src})`, maskImage: `url(${p.src})` }} />}
+                {p.label && <span className="t-meta hm-partner-name">{p.name}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* 05 PROGRAMAS — Teal */}
+      <section className="hm-programs" id="programs" data-section-theme="teal" aria-labelledby="programs-h">
+        <div className="hm-wrap">
+          <SectionHead eyebrow={t('programsEyebrow')} title={t('programsH2')} sub={t('programsSub')} id="programs-h" />
+          <ul className="hm-programs-grid">
+            {programs.map((p, i) => (
+              <li key={p.code} className="hm-card hm-program">
+                <div className="hm-program-media">
+                  <img src={`/shared/img/mascots/${PROGRAM_MASCOTS[i]}.webp`} srcSet={`/shared/img/mascots/${PROGRAM_MASCOTS[i]}.webp 1x, /shared/img/mascots/${PROGRAM_MASCOTS[i]}@2x.webp 2x`} alt="" width="214" height={i === 1 ? 178 : i === 0 ? 229 : 218} loading="lazy" />
+                </div>
+                <div className="hm-program-body">
+                  <p className="t-eyebrow hm-eyebrow">{p.code}</p>
+                  <h3 className="t-h3">{p.title}</h3>
+                  <p className="t-body-m hm-muted">{p.body}</p>
+                  <hr className="hm-rule" />
+                  <p className="hm-datum"><span className="t-h4">{p.stat}</span><span className="t-meta">{p.statLabel}</span></p>
+                  <a className="btn btn--link hm-stretch" href={p.href} {...(p.external ? { target: '_blank', rel: 'noopener' } : {})}>{t('progLearnMore')} <Arrow /></a>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* 06 ARTÍCULOS */}
+      <section className="hm-articles" id="articles" aria-labelledby="articles-h">
+        <div className="hm-wrap">
+          <SectionHead eyebrow={t('articlesEyebrow')} title={t('articlesH2')} id="articles-h">
+            <img className="hm-head-mascot" src="/shared/img/mascots/cyborg.webp" srcSet="/shared/img/mascots/cyborg.webp 1x, /shared/img/mascots/cyborg@2x.webp 2x" alt="" width="112" height="143" loading="lazy" />
+          </SectionHead>
+          <div className="hm-chips" role="group" aria-label={t('filtersLabel')}>
+            {FILTERS.map(([k, label]) => (
+              <button key={k} type="button" className="hm-chip" aria-pressed={tab === k} onClick={() => { setTab(k); setPage(1); }}>{label}</button>
             ))}
           </div>
-          </div>
-        </Reveal>
-
-        <div className="fs-articles-grid" key={`${tab}-${page}`}>
-          {pageArticles.map((a, i) => {
-            const isFeat = page === 1 && i === 0;
-            const isNew = isNewArticle(a);
-            return (
-            <Reveal key={a.id} delay={i * 50} className={isFeat ? 'fs-article-feat-wrap' : undefined}>
-              <a
-                href={a.link || 'https://telluscoop.beehiiv.com'}
-                target={a.link ? '_blank' : undefined}
-                rel="noopener noreferrer"
-                className={`fs-article fs-article-card${isFeat ? ' fs-article--feat' : ''}${isNew ? ' is-new' : ''}`}
-              >
-                <div className={`fs-article-img${a.thumbnail ? '' : ' fs-article-img--no-thumb'}`}>
-                  {a.thumbnail
-                    ? <img src={a.thumbnail} alt="" className="fs-article-thumb" loading={isFeat ? undefined : 'lazy'} />
-                    : <div className="fs-article-img-placeholder"><span className="fs-article-img-initial">{a.title?.charAt(0)}</span></div>
-                  }
-                  <span className={`fs-article-tag fs-tag-${a.tag}`}>{a.kind}</span>
-                  {isNew && <span className="fs-article-new">{t('articlesNew')}</span>}
-                </div>
-                <div className="fs-article-body">
-                  <div className="mono fs-article-meta">
-                    {isFeat && <span className="fs-article-latest">{t('articlesLatest')}</span>}
-                    <time dateTime={a.pubTs ? new Date(a.pubTs).toISOString() : undefined}>{articleDate(a)}</time>
-                  </div>
-                  <h3 className="fs-article-title">{a.title}</h3>
-                  {a.excerpt && <p className="fs-article-excerpt">{a.excerpt}</p>}
-                </div>
-              </a>
-            </Reveal>
-            );
-          })}
-        </div>
-
-        {totalPages > 1 && (() => {
-          const windowSize = 5;
-          let start = Math.max(1, page - Math.floor(windowSize / 2));
-          let end = Math.min(totalPages, start + windowSize - 1);
-          if (end - start + 1 < windowSize) start = Math.max(1, end - windowSize + 1);
-          const pageNums = Array.from({ length: end - start + 1 }, (_, i) => start + i);
-          return (
-          <div className="fs-articles-foot">
-            <div className="fs-pagination">
-              <button
-                className={`fs-page-btn fs-page-arrow${page === 1 ? ' is-disabled' : ''}`}
-                onClick={() => { if (page > 1) { setPage(page - 1); document.querySelector('#articles')?.scrollIntoView({ behavior: 'smooth' }); } }}
-                disabled={page === 1}
-                aria-label="Previous page"
-              >←</button>
-              {pageNums.map(p => (
-                <button
-                  key={p}
-                  className={`fs-page-btn ${page === p ? 'is-on' : ''}`}
-                  onClick={() => { setPage(p); document.querySelector('#articles')?.scrollIntoView({ behavior: 'smooth' }); }}
-                >
-                  {p}
-                </button>
+          <ul className="hm-articles-grid">
+            {pageArticles.map((a) => (
+              <li key={a.id}>
+                <a className="hm-card hm-article" href={a.link || BEEHIIV} target="_blank" rel="noopener">
+                  <span className="hm-article-thumb">
+                    {a.thumb && <img src={a.thumb} alt="" width="410" height="200" loading="lazy" />}
+                  </span>
+                  <span className="hm-article-meta t-meta"><span className="t-eyebrow hm-tag">{a.kind}</span><span aria-hidden="true">·</span><time dateTime={a.pubTs ? new Date(a.pubTs).toISOString() : undefined}>{fmt(a)}</time></span>
+                  <h3 className="t-h4 hm-article-title">{a.title}</h3>
+                  {a.excerpt && <p className="t-body-s hm-muted hm-clamp">{a.excerpt}</p>}
+                </a>
+              </li>
+            ))}
+          </ul>
+          {totalPages > 1 && (
+            <nav className="hm-pager" aria-label={t('articlesNav')}>
+              <button type="button" className="hm-page" aria-label={t('prevPage')} disabled={cur === 1} onClick={() => goPage(cur - 1)}>←</button>
+              {pageNums.map((n) => (
+                <button key={n} type="button" className="hm-page" aria-label={`${t('pageN')} ${n}`} aria-current={n === cur ? 'page' : undefined} onClick={() => goPage(n)}>{n}</button>
               ))}
-              <button
-                className={`fs-page-btn fs-page-arrow${page === totalPages ? ' is-disabled' : ''}`}
-                onClick={() => { if (page < totalPages) { setPage(page + 1); document.querySelector('#articles')?.scrollIntoView({ behavior: 'smooth' }); } }}
-                disabled={page === totalPages}
-                aria-label="Next page"
-              >→</button>
-            </div>
-          </div>
-        );})()}
+              <button type="button" className="hm-page" aria-label={t('nextPage')} disabled={cur === totalPages} onClick={() => goPage(cur + 1)}>→</button>
+            </nav>
+          )}
+        </div>
       </section>
 
-      {/* YOUTUBE COURSES */}
-      <section id="courses" className="fs-courses">
-        <Reveal className="fs-section-head fs-courses-head">
-          <div>
-            <div className="eyebrow">{t('coursesEyebrow')}</div>
-            <h2 className="fs-h2">{t('coursesH2')}</h2>
-          </div>
-          <a className="fs-btn-secondary" href="https://www.youtube.com/@telluscoop/playlists" target="_blank" rel="noopener noreferrer">
-            {t('coursesViewAll')}
-          </a>
-        </Reveal>
-        <div className="fs-courses-grid">
-          <Reveal delay={0} className="fs-course-feat-wrap">
-            <a
-              className="fs-course-feat"
-              href={playlists[0].url || `https://www.youtube.com/playlist?list=${playlists[0].list}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <div className="fs-course-feat-img">
-                <img src={`https://i.ytimg.com/vi/${playlists[0].vid}/hqdefault.jpg`} alt={playlists[0].title} />
-                <div className="fs-course-play-btn">
-                  <svg viewBox="0 0 24 24" fill="currentColor" width="36" height="36"><path d="M8 5v14l11-7z"/></svg>
-                </div>
-                <span className="fs-course-feat-badge">YouTube · Playlist</span>
-              </div>
-              <div className="fs-course-feat-body">
-                <h3 className="fs-course-feat-title">{playlists[0].title}</h3>
-                <span className="fs-course-feat-cta">{t('coursesViewPlaylist')} <span className="fs-arrow">→</span></span>
-              </div>
+      {/* 07 CURSOS — Cielo */}
+      <section className="hm-courses" id="courses" data-section-theme="cielo" aria-labelledby="courses-h">
+        <div className="hm-wrap">
+          <SectionHead eyebrow={t('coursesEyebrow')} title={t('coursesH2')} id="courses-h">
+            <img className="hm-head-mascot hm-head-mascot--profe" src="/shared/img/mascots/profesor.webp" srcSet="/shared/img/mascots/profesor.webp 1x, /shared/img/mascots/profesor@2x.webp 2x" alt="" width="140" height="118" loading="lazy" />
+            <a className="btn btn--link hm-view-all" href={URL_YT_PLAYLISTS} target="_blank" rel="noopener">{t('coursesViewAll')}</a>
+          </SectionHead>
+          <div className="hm-courses-grid">
+            <a className="hm-card hm-course hm-course--feat" href={PLAYLISTS[0].url || `https://www.youtube.com/playlist?list=${PLAYLISTS[0].list}`} target="_blank" rel="noopener">
+              <span className="hm-course-thumb"><img src={`https://i.ytimg.com/vi/${PLAYLISTS[0].vid}/hqdefault.jpg`} alt="" width="480" height="360" loading="lazy" /></span>
+              <span className="t-eyebrow hm-tag">{t('playlist')}</span>
+              <h3 className="t-h3">{PLAYLISTS[0].title}</h3>
+              <span className="t-link hm-course-cta">{t('viewPlaylist')} <Arrow /></span>
             </a>
-          </Reveal>
-          <div className="fs-course-side-stack">
-            {playlists.slice(1).map((p, i) => (
-              <Reveal key={i} delay={i * 60}>
-                <a
-                  className="fs-course-side"
-                  href={p.url || `https://www.youtube.com/playlist?list=${p.list}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <div className="fs-course-side-img">
-                    <img src={`https://i.ytimg.com/vi/${p.vid}/hqdefault.jpg`} alt={p.title} loading="lazy" />
-                  </div>
-                  <div className="fs-course-side-body">
-                    <span className="fs-course-tag">YouTube · Playlist</span>
-                    <h4 className="fs-course-side-title">{p.title}</h4>
-                  </div>
+            <ul className="hm-courses-list">
+              {PLAYLISTS.slice(1).map((p) => (
+                <li key={p.list}>
+                  <a className="hm-card hm-course hm-course--row" href={p.url || `https://www.youtube.com/playlist?list=${p.list}`} target="_blank" rel="noopener">
+                    <span className="hm-course-thumb"><img src={`https://i.ytimg.com/vi/${p.vid}/hqdefault.jpg`} alt="" width="480" height="360" loading="lazy" /></span>
+                    <span className="hm-course-text"><span className="t-eyebrow hm-tag">{t('playlist')}</span><span className="t-h4">{p.title}</span></span>
+                    <Arrow />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* 08 COMUNIDAD — 6 channel cards (replaces the Instagram/X embeds) */}
+      <section className="hm-community" id="community" aria-labelledby="community-h">
+        <div className="hm-wrap">
+          <SectionHead eyebrow={t('wallEyebrow')} title={t('wallH2')} sub={t('wallSub')} id="community-h" />
+          <ul className="hm-channels">
+            {channels.map((c) => (
+              <li key={c.name}>
+                <a className="hm-card hm-channel" href={c.href} target="_blank" rel="noopener">
+                  {channelIcon(c.icon)}
+                  <span className="hm-channel-text"><span className="t-h4">{c.name}</span><span className="t-body-s hm-muted">{c.desc}</span></span>
+                  <Arrow />
                 </a>
-              </Reveal>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
 
-      {/* SOCIAL WALL */}
-      <section className="fs-wall" id="field">
-        <Reveal className="fs-section-head fs-wall-head">
-          <div>
-            <div className="eyebrow">{t('wallEyebrow')}</div>
-            <h2 className="fs-h2">{t('wallH2')}</h2>
-          </div>
-          <div className="fs-wall-handles">
-            <a className="fs-handle" href="https://x.com/TellusCoop" target="_blank" rel="noopener noreferrer">
-              <span className="fs-handle-ico fs-ico-x"><svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></span>
-              <span>@TellusCoop</span>
-            </a>
-            <a className="fs-handle" href="https://www.instagram.com/telluscooperative/" target="_blank" rel="noopener noreferrer">
-              <span className="fs-handle-ico fs-ico-ig"><svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></span>
-              <span>@telluscooperative</span>
-            </a>
-            <a className="fs-handle" href="https://www.youtube.com/@telluscoop" target="_blank" rel="noopener noreferrer">
-              <span className="fs-handle-ico fs-ico-yt"><svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></span>
-              <span>@telluscooperative</span>
-            </a>
-            <a className="fs-handle" href="https://www.linkedin.com/company/tellus-cooperative/" target="_blank" rel="noopener noreferrer">
-              <span className="fs-handle-ico fs-ico-li"><svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></span>
-              <span>tellus-cooperative</span>
-            </a>
-            <a className="fs-handle" href="https://chat.whatsapp.com/FsNIUPsmNCl2YJkQi5r4p4" target="_blank" rel="noopener noreferrer">
-              <span className="fs-handle-ico fs-ico-wa"><svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span>
-              <span>{t('wallWa')}</span>
-            </a>
-          </div>
-        </Reveal>
-
-        <div className="fs-tweets-grid">
-          {[
-            { url: 'https://twitter.com/Stellar_Chile/status/2039151468893093980', label: 'Programa de Embajadores Stellar Chile' },
-            { url: 'https://twitter.com/TellusCoop/status/2030682502063439923', label: 'Embajadores en Colombia' },
-            { url: 'https://twitter.com/TellusCoop/status/2028927037713297638', label: 'Stellar Barrio · cowork Santiago' },
-            { url: 'https://twitter.com/TellusCoop/status/2016526731960553968', label: 'Hola Stellar · cursos en YouTube' },
-          ].map((t, i) => (
-            <Reveal key={i} delay={i * 80} className="fs-tweet-wrap">
-              <TweetEmbed url={t.url} label={t.label} theme={theme} />
-            </Reveal>
-          ))}
-        </div>
-
-        <div className="fs-wall-foot">
-          <a className="fs-wall-cta" href="https://www.instagram.com/telluscooperative/" target="_blank" rel="noopener noreferrer">
-            <span>{t('wallFollow')}</span>
-            <span className="fs-arrow">→</span>
-          </a>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="fs-cta">
-        <div className="fs-cta-bg" aria-hidden="true">
-          <span></span><span></span><span></span>
-        </div>
-        <Reveal>
-          <h2 className="fs-h2 fs-cta-h">{t('ctaH2Line1')}<br/><em>{t('ctaH2Line2')}</em></h2>
-        </Reveal>
-        <Reveal delay={150}>
-          <p className="fs-cta-sub">{t('ctaSub')}</p>
-        </Reveal>
-        <Reveal delay={300}>
-          <button className="fs-btn-primary fs-btn-lg" onClick={() => setJoinOpen(true)}>
-            <span>{t('ctaJoin')}</span>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          </button>
-        </Reveal>
-        <Reveal delay={450}>
-          <a className="fs-cta-wa" href="https://chat.whatsapp.com/FsNIUPsmNCl2YJkQi5r4p4" target="_blank" rel="noopener noreferrer">
-            <img src="uploads/whatsapp.svg" alt="WhatsApp" width="16" height="16" className="fs-wa-ico" />
-            <span>{t('ctaWa')}</span>
-            <span className="fs-arrow">→</span>
-          </a>
-        </Reveal>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="fs-footer">
-        <div className="fs-footer-grid">
-          <div className="fs-footer-brand">
-            <a className="fs-mark" href="/" aria-label="Tellus Cooperative home">
-              <img src="uploads/tellus.svg" alt="Tellus Cooperative" className="fs-mark-img fs-logo-light" />
-            <img src="/policies/assets/tellus-sand.svg" alt="Tellus Cooperative" className="fs-mark-img fs-logo-dark" />
-            </a>
-            <p>{t('footerBrand')}</p>
-          </div>
-          <div>
-            <div className="eyebrow">{t('footerPrograms')}</div>
-            <ul>
-              <li><a href={YT_PLAYLISTS} target="_blank" rel="noopener noreferrer">{t('footerEdu')}</a></li>
-              <li><a href={AMBASSADORS_URL}>{t('footerInc')}</a></li>
-              <li><a href="/resources">{t('footerPub')}</a></li>
-            </ul>
-          </div>
-          <div>
-            <div className="eyebrow">{t('footerCoop')}</div>
-            <ul>
-              <li><a href="/hub">{t('footerHub')}</a></li>
-              <li><a href="/resources">{t('footerResources')}</a></li>
-              <li><a href={AMBASSADORS_URL}>{t('footerAmbassadors')}</a></li>
-              <li><a href="/merch/">{t('footerMerch')}</a></li>
-              <li><a href="/brand">{t('footerBrandGuide')}</a></li>
-              <li><a href={COC_URL}>{t('footerCoc')}</a></li>
-            </ul>
-          </div>
-          <div>
-            <div className="eyebrow">{t('footerTools')}</div>
-            <ul>
-              <li><a href="/tools/qr-generator">{t('footerQr')}</a></li>
-              <li><a href="/tools/fear-greed">{t('footerFearGreed')}</a></li>
-            </ul>
-          </div>
-          <div>
-            <div className="eyebrow">{t('footerCommunity')}</div>
-            <ul>
-              <li><a href="https://chat.whatsapp.com/FsNIUPsmNCl2YJkQi5r4p4" target="_blank" rel="noopener noreferrer" className="fs-footer-icon-link"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>{t('wallWa')}</a></li>
-              <li><a href="https://telluscoop.beehiiv.com" target="_blank" rel="noopener noreferrer" className="fs-footer-icon-link"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>{t('footerNewsletter')}</a></li>
-              <li><a href="https://www.youtube.com/@telluscoop" target="_blank" rel="noopener noreferrer" className="fs-footer-icon-link"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>{t('footerYt')}</a></li>
-            </ul>
-          </div>
-          <div>
-            <div className="eyebrow">{t('footerFollow')}</div>
-            <ul>
-              <li><a href="https://x.com/TellusCoop" target="_blank" rel="noopener noreferrer" className="fs-footer-icon-link"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>X / Twitter</a></li>
-              <li><a href="https://www.instagram.com/telluscooperative/" target="_blank" rel="noopener noreferrer" className="fs-footer-icon-link"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>Instagram</a></li>
-              <li><a href="https://www.linkedin.com/company/tellus-cooperative/" target="_blank" rel="noopener noreferrer" className="fs-footer-icon-link"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>LinkedIn</a></li>
-              <li><a href="https://github.com/Tellus-Cooperative/" target="_blank" rel="noopener noreferrer" className="fs-footer-icon-link"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>GitHub</a></li>
-              <li><a href="https://discord.gg/Fy2SgR3XRu" target="_blank" rel="noopener noreferrer" className="fs-footer-icon-link"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028 14.09 14.09 0 001.226-1.994.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>Discord</a></li>
-            </ul>
-          </div>
-        </div>
-        <div className="fs-footer-base">
-          <span>{t('footerCopyright')}</span>
-          <a href={COC_URL} className="fs-footer-base-link">{t('footerCoc')}</a>
-        </div>
-      </footer>
-
-      {joinOpen && <JoinModal onClose={() => setJoinOpen(false)} />}
-    </div>
-  );
-};
-
-// X/Twitter embeds are rendered imperatively so they can be re-rendered
-// with the matching theme when the visitor toggles dark mode.
-let twitterReady = null;
-const loadTwitter = () => {
-  if (twitterReady) return twitterReady;
-  twitterReady = new Promise((resolve) => {
-    if (window.twttr?.widgets?.createTweet) return resolve(window.twttr);
-    const s = document.createElement('script');
-    s.src = 'https://platform.twitter.com/widgets.js';
-    s.async = true;
-    s.charset = 'utf-8';
-    s.onload = () => (window.twttr?.ready ? window.twttr.ready(resolve) : resolve(window.twttr));
-    s.onerror = () => resolve(null);
-    document.head.appendChild(s);
-  });
-  return twitterReady;
-};
-
-const TweetEmbed = ({ url, label, theme }) => {
-  const target = useRef(null);
-  const [rendered, setRendered] = useState(false);
-  useEffect(() => {
-    const el = target.current;
-    const id = (url.match(/status\/(\d+)/) || [])[1];
-    if (!el || !id) return;
-    let cancelled = false;
-    loadTwitter().then((tw) => {
-      if (cancelled || !tw?.widgets?.createTweet) return;
-      el.innerHTML = '';
-      tw.widgets.createTweet(id, el, { theme, dnt: true, lang: 'es', align: 'center' })
-        .then((node) => { if (!cancelled && node) setRendered(true); })
-        .catch(() => {});
-    });
-    return () => { cancelled = true; };
-  }, [url, theme]);
-  return (
-    <div className="fs-tweet-embed">
-      {!rendered && <a className="fs-tweet-fallback" href={url} target="_blank" rel="noopener noreferrer">{label}</a>}
-      <div ref={target} />
-    </div>
-  );
-};
-
-const ThemeToggle = ({ theme, onToggle, t }) => {
-  const isDark = theme === 'dark';
-  const label = isDark ? t('themeToLight') : t('themeToDark');
-  return (
-    <button type="button" className="fs-theme-toggle" onClick={onToggle} aria-label={label} title={label} aria-pressed={isDark}>
-      <svg className="fs-ico-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      <svg className="fs-ico-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-    </button>
-  );
-};
-
-const CountStat = ({ target, suffix = '', label }) => {
-  const [ref, shown] = useReveal();
-  const v = useCountUp(target, shown);
-  const display = target % 1 !== 0 ? v.toFixed(1) : Math.round(v).toLocaleString();
-  return (
-    <div ref={ref} className="fs-program-stat-inner">
-      <span className="fs-program-num-big">{display}{suffix && <span className="fs-stat-suffix">{suffix}</span>}</span>
-      <span className="eyebrow">{label}</span>
-    </div>
-  );
-};
-
-const Stat = ({ num, suffix = '', label, unit, decimals = 0 }) => {
-  const [ref, shown] = useReveal();
-  const v = useCountUp(num, shown);
-  const display = decimals > 0 ? v.toFixed(decimals) : Math.round(v).toLocaleString();
-  return (
-    <div ref={ref} className="fs-stat">
-      <div className="fs-stat-num">
-        <span>{display}</span>
-        {suffix && <span className="fs-stat-suffix">{suffix}</span>}
-      </div>
-      <div className="eyebrow">{unit || label}</div>
-    </div>
-  );
-};
-
-const JoinModal = ({ onClose }) => {
-  const { t } = window.useLang();
-  const [email, setEmail] = useState('');
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleSubscribe = async (e) => {
-    e.preventDefault();
-    if (!email) return;
-    setLoading(true);
-    setError('');
-    try {
-      const res = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-      if (!res.ok) throw new Error('error');
-      setDone(true);
-    } catch {
-      setError(t('modalError'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="fs-modal-bg" onClick={onClose}>
-      <div className="fs-modal fs-modal-wide" onClick={e => e.stopPropagation()}>
-        <button className="fs-modal-close" onClick={onClose} aria-label="Close">×</button>
-        {!done ? (
-          <>
-            <h3 className="fs-modal-h" style={{ marginBottom: 4 }}>{t('modalTitle')}</h3>
-            <p className="fs-modal-lede" style={{ marginBottom: 24 }}>{t('modalSub')}</p>
-            <form className="fs-subscribe-form" onSubmit={handleSubscribe}>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder={t('modalPlaceholder')}
-                required
-                autoFocus
-                className="fs-subscribe-input"
-                disabled={loading}
-              />
-              <button type="submit" className="fs-btn-primary fs-subscribe-btn" disabled={loading}>
-                <span>{loading ? '...' : t('modalSubscribe')}</span>
-                {!loading && <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
-              </button>
-            </form>
-            {error && <p style={{ color: 'var(--accent-text)', fontSize: 13, marginTop: 8 }}>{error}</p>}
-            <div className="fs-modal-divider"><span>{t('modalCommunityLabel')}</span></div>
-            <div className="fs-modal-community">
-              <a href="https://chat.whatsapp.com/FsNIUPsmNCl2YJkQi5r4p4" target="_blank" rel="noopener noreferrer" className="fs-community-btn fs-community-wa">
-                <img src="uploads/whatsapp.svg" alt="WhatsApp" width="20" height="20" style={{filter:'brightness(10)'}} />
-                <span>{t('modalWa')}</span>
-              </a>
-              <a href="https://discord.gg/Fy2SgR3XRu" target="_blank" rel="noopener noreferrer" className="fs-community-btn fs-community-dc">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028 14.09 14.09 0 001.226-1.994.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
-                <span>{t('modalDiscord')}</span>
-              </a>
-            </div>
-          </>
-        ) : (
-          <div className="fs-modal-success">
-            <div className="fs-modal-check" aria-hidden="true">
-              <svg viewBox="0 0 48 48" width="48" height="48">
-                <circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" strokeWidth="1.5" className="fs-check-c"/>
-                <path d="M14 24l7 7 14-14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="fs-check-p"/>
-              </svg>
-            </div>
-            <h3 className="fs-modal-h">{t('modalSuccessTitle')}</h3>
-            <p className="fs-modal-lede">{t('modalSuccessSub')}</p>
-            <div className="fs-modal-community">
-              <a href="https://chat.whatsapp.com/FsNIUPsmNCl2YJkQi5r4p4" target="_blank" rel="noopener noreferrer" className="fs-community-btn fs-community-wa">
-                <img src="uploads/whatsapp.svg" alt="WhatsApp" width="20" height="20" style={{filter:'brightness(10)'}} />
-                <span>{t('modalWa')}</span>
-              </a>
-              <a href="https://discord.gg/Fy2SgR3XRu" target="_blank" rel="noopener noreferrer" className="fs-community-btn fs-community-dc">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028 14.09 14.09 0 001.226-1.994.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
-                <span>{t('modalDiscord')}</span>
-              </a>
-            </div>
-            <button className="fs-btn-primary fs-modal-btn" style={{ marginTop: 16 }} onClick={onClose}>{t('modalDone')}</button>
-          </div>
-        )}
-      </div>
-    </div>
+      {/* 09 LLAMADO — Naranjo, magnifier-planet mascot */}
+      <ShellSlot kind="cta" theme="naranjo" />
+    </>
   );
 };
 

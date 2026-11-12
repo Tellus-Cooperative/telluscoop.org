@@ -167,45 +167,54 @@ window.LANG_TRANSLATIONS = {
   },
 };
 
+// Redesign copy (Figma XRqSz2oG6K622fa44wG8Gl). Overrides / additions to the dictionaries above.
+// Nav, footer, ribbon, CTA and the Join modal strings live in /shared/site.js, so the old
+// nav*/footer*/modal*/lb* keys above are no longer read.
+Object.assign(window.LANG_TRANSLATIONS.en, {
+  heroEyebrow: 'The blockchain cooperative · Est. 2019',
+  statSubscribers: 'Active subscribers', statCountries: 'Countries reached', statProjects: 'Hackathon projects', statOpen: 'Open & cooperative',
+  prog1StatLabel: 'Active students', prog2StatLabel: 'Community projects', prog3StatLabel: 'Articles published',
+  coursesViewAll: 'View all playlists →',
+  wallSub: 'Follow the cooperative where the conversation happens.', wallSrv: 'Community server',
+  filterAll: 'All', filterBlockchain: 'Blockchain', filterIa: 'IA', filterNewsletter: 'Newsletter',
+  prevPage: 'Previous page', nextPage: 'Next page', pageN: 'Page', articlesNav: 'Articles pages', filtersLabel: 'Filter articles',
+  playlist: 'YouTube · Playlist', viewPlaylist: 'View playlist',
+});
+Object.assign(window.LANG_TRANSLATIONS.es, {
+  heroEyebrow: 'La cooperativa blockchain · Est. 2019',
+  statSubscribers: 'Suscriptores activos', statCountries: 'Países alcanzados', statProjects: 'Proyectos en hackathones', statOpen: 'Abierto y cooperativo',
+  prog1StatLabel: 'Estudiantes activos', prog2StatLabel: 'Proyectos comunitarios', prog3StatLabel: 'Artículos publicados',
+  coursesViewAll: 'Ver todas las playlists →',
+  wallSub: 'Sigue a la cooperativa donde ocurre la conversación.', wallSrv: 'Servidor de la comunidad',
+  filterAll: 'Todos', filterBlockchain: 'Blockchain', filterIa: 'IA', filterNewsletter: 'Newsletter',
+  prevPage: 'Página anterior', nextPage: 'Página siguiente', pageN: 'Página', articlesNav: 'Páginas de artículos', filtersLabel: 'Filtrar artículos',
+  playlist: 'YouTube · Playlist', viewPlaylist: 'Ver playlist',
+});
+Object.assign(window.LANG_TRANSLATIONS.pt, {
+  heroEyebrow: 'A cooperativa blockchain · Est. 2019',
+  wallSub: 'Siga a cooperativa onde a conversa acontece.', wallSrv: 'Servidor da comunidade',
+  filterAll: 'Todos', filterBlockchain: 'Blockchain', filterIa: 'IA', filterNewsletter: 'Newsletter',
+  prevPage: 'Página anterior', nextPage: 'Próxima página', pageN: 'Página', articlesNav: 'Páginas de artigos', filtersLabel: 'Filtrar artigos',
+  playlist: 'YouTube · Playlist', viewPlaylist: 'Ver playlist', coursesViewAll: 'Ver todas as playlists →',
+});
+
+// Language state for the Home app. The shell (nav/footer/modal) lives in /shared/site.js and
+// fires "tellus:lang" whenever the visitor switches language, so both stay in sync.
+// TODO(spec §15 Q2): Portuguese is not in the redesign (ES/EN only). Keep PT working until decided.
 window.useLang = () => {
-  const [lang, setLangState] = React.useState(() => localStorage.getItem('tellus-lang') || 'en');
-  const setLang = (l) => { localStorage.setItem('tellus-lang', l); setLangState(l); };
+  const read = () => {
+    let l = 'en';
+    try { l = localStorage.getItem('tellus-lang') || 'en'; } catch (e) {}
+    return window.LANG_TRANSLATIONS[l] ? l : 'en';
+  };
+  const [lang, setLangState] = React.useState(read);
+  React.useEffect(() => {
+    document.documentElement.setAttribute('lang', lang);
+    const on = () => setLangState(read());
+    window.addEventListener('tellus:lang', on);
+    return () => window.removeEventListener('tellus:lang', on);
+  }, [lang]);
+  const setLang = (l) => { if (window.TellusShell) window.TellusShell.setLang(l); else setLangState(l); };
   const t = (key) => window.LANG_TRANSLATIONS[lang]?.[key] ?? window.LANG_TRANSLATIONS.en[key] ?? key;
   return { lang, setLang, t };
 };
-
-const LANG_LABELS = { en: 'English', es: 'Español', pt: 'Português' };
-
-const LangSwitcher = ({ lang, setLang }) => {
-  const [open, setOpen] = React.useState(false);
-  const ref = React.useRef(null);
-
-  React.useEffect(() => {
-    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-
-  return (
-    <div className="fs-lang-switcher" ref={ref}>
-      <button className="fs-lang-trigger" onClick={() => setOpen(o => !o)} aria-label="Select language">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-        </svg>
-        <span>{lang.toUpperCase()}</span>
-      </button>
-      {open && (
-        <div className="fs-lang-dropdown">
-          {['en', 'es', 'pt'].map(l => (
-            <button key={l} className={`fs-lang-option${lang === l ? ' is-on' : ''}`} onClick={() => { setLang(l); setOpen(false); }}>
-              <span className="fs-lang-code">{l.toUpperCase()}</span>
-              <span className="fs-lang-label">{LANG_LABELS[l]}</span>
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
-
-window.LangSwitcher = LangSwitcher;
