@@ -128,7 +128,7 @@
       var tags = (tool.tags || []).slice(0, 3).map(function (g) { return '<span class="rs-tag">' + esc(g) + '</span>'; }).join('');
       return '<a class="rs-card" href="/resources/tools/' + encodeURIComponent(tool.slug) + '"><div class="rs-card-head">' +
         (tool.recommended ? '<span class="rs-badge">' + esc(t('recommended')) + '</span>' : '') +
-        '<h3 class="rs-card-name t-h4">' + esc(tool.name) + '</h3></div>' +
+        '<h2 class="rs-card-name t-h4">' + esc(tool.name) + '</h2></div>' +
         '<p class="rs-card-desc t-body-m">' + esc(pick(tool, 'description')) + '</p>' +
         '<p class="rs-card-plan t-eyebrow">' + esc(pick(tool, 'free_tier_note')) + '</p>' +
         '<p class="rs-card-detail t-body-s">' + esc(pick(tool, 'free_tier_detail')) + '</p>' +

@@ -121,7 +121,7 @@ const FoundationSystem = () => {
   })();
 
   const partners = [
-    { name: 'Stellar Foundation', kind: 'img', src: '/shared/img/partners/stellar-foundation.png', w: 128, h: 32 },
+    { name: 'Stellar Foundation', kind: 'img', src: '/shared/img/partners/stellar-foundation.webp', w: 128, h: 32 },
     { name: 'Filecoin', kind: 'img', src: '/shared/img/partners/filecoin.svg', w: 32, h: 32, label: true },
     { name: 'Ethereum', kind: 'img', src: '/shared/img/partners/ethereum.svg', w: 20, h: 32, label: true },
     { name: 'Avalanche', kind: 'img', src: '/shared/img/partners/avalanche.svg', w: 32, h: 32, label: true },
@@ -186,8 +186,8 @@ const FoundationSystem = () => {
             {partners.map((p) => (
               <li key={p.name} className="hm-partner">
                 {p.kind === 'img'
-                  ? <img src={p.src} alt={p.name} width={p.w} height={p.h} loading="lazy" />
-                  : <span className="hm-partner-mask" role="img" aria-label={p.name} style={{ width: p.w, height: p.h, WebkitMaskImage: `url(${p.src})`, maskImage: `url(${p.src})` }} />}
+                  ? <img src={p.src} alt={p.label ? '' : p.name} width={p.w} height={p.h} loading="lazy" />
+                  : <span className="hm-partner-mask" {...(p.label ? { 'aria-hidden': 'true' } : { role: 'img', 'aria-label': p.name })} style={{ width: p.w, height: p.h, WebkitMaskImage: `url(${p.src})`, maskImage: `url(${p.src})` }} />}
                 {p.label && <span className="t-meta hm-partner-name">{p.name}</span>}
               </li>
             ))}

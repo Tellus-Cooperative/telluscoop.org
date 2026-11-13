@@ -176,7 +176,7 @@ Object.assign(window.LANG_TRANSLATIONS.en, {
   prog1StatLabel: 'Active students', prog2StatLabel: 'Community projects', prog3StatLabel: 'Articles published',
   coursesViewAll: 'View all playlists →',
   wallSub: 'Follow the cooperative where the conversation happens.', wallSrv: 'Community server',
-  filterAll: 'All', filterBlockchain: 'Blockchain', filterIa: 'IA', filterNewsletter: 'Newsletter',
+  filterAll: 'All', filterBlockchain: 'Blockchain', filterIa: 'AI', filterNewsletter: 'Newsletter',
   prevPage: 'Previous page', nextPage: 'Next page', pageN: 'Page', articlesNav: 'Articles pages', filtersLabel: 'Filter articles',
   playlist: 'YouTube · Playlist', viewPlaylist: 'View playlist',
 });

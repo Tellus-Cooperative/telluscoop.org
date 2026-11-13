@@ -64,8 +64,9 @@ test('RSS parser extracts items, decodes CDATA/entities and sorts newest first',
   assert.equal(items[1].title, 'Viejo & nuevo');
 });
 
-test('filter chip is spelled "IA", not "Ia"', () => {
-  assert.match(read('i18n.js'), /filterIa: 'IA'/);
+test('filter chip is "AI" in English and "IA" in Spanish, never "Ia"', () => {
+  assert.match(read('i18n.js'), /filterAll: 'All', filterBlockchain: 'Blockchain', filterIa: 'AI'/);
+  assert.match(read('i18n.js'), /filterAll: 'Todos', filterBlockchain: 'Blockchain', filterIa: 'IA'/);
   assert.doesNotMatch(read('foundation.jsx'), />Ia</);
 });
 

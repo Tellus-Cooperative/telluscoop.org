@@ -12,6 +12,7 @@
 .pol-meta .pol-tag { color: var(--text-brand); }
 .pol-meta .pol-date { color: var(--text-secondary); }
 .pol-meta .pol-url { color: var(--text-muted); }
+.pol-meta .pol-url::before { content: "· "; }
 .pol-note { margin-top: 16px; max-width: 680px; font: 400 14px/20px var(--sans); color: var(--text-secondary); }
 .pol-note a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 .pol-note a:hover { color: var(--accent-hover); }
@@ -108,6 +109,7 @@
   .pol-head h1 { font-size: 36px; line-height: 42px; }
   .pol-head .pol-sub { font-size: 26px; line-height: 34px; }
   .pol-meta { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .pol-meta .pol-url::before { content: none; }
   .pol-body { padding-top: 32px; }
   .pol-related { flex-direction: row; padding: 20px; }
   .pol-related strong { font-size: 20px; line-height: 26px; }
