@@ -141,10 +141,12 @@
 
   function socialHtml(lang) {
     return '<div class="tl-social">' + SOCIAL.map(function (s) {
-      return '<a href="' + s[2] + '" target="_blank" rel="noopener" aria-label="' + esc(S(lang, 'socialOn') + s[1]) + '"><img src="/shared/img/social/' + s[0] + '.svg" alt="" width="20" height="20" aria-hidden="true"></a>';
+      return '<a href="' + s[2] + '" target="_blank" rel="noopener" aria-label="' + esc(S(lang, 'socialOn') + s[1]) + '"><img src="/shared/img/net/' + ICON_FILE[s[0]] + '.svg" alt="" width="20" height="20" aria-hidden="true"></a>';
     }).join('') + '</div>';
   }
 
+  // Neutral icon file names: blockers (uBlock social lists) block icon URLs named after social networks
+  var ICON_FILE = { x: 'n1', instagram: 'n2', linkedin: 'n3', youtube: 'n4', github: 'n5', discord: 'n6', whatsapp: 'n7' };
   function langSelector(lang, alt) {
     var other = lang === 'es' ? 'en' : 'es';
     var opts = ['es', 'en'].map(function (l) {

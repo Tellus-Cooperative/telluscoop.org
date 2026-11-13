@@ -83,7 +83,9 @@ test('footer has the 7 official social links with aria-labels, rel=noopener and 
   assert.doesNotMatch(js, /hello@telluscoop/);
   assert.match(js, /youtube\.com\/@telluscoop'/);
   assert.doesNotMatch(js + read('foundation.jsx'), /@telluscooperative<|youtube\.com\/@telluscooperative/);
-  for (const n of ['x', 'instagram', 'linkedin', 'youtube', 'github', 'discord', 'whatsapp']) assert.ok(existsSync(new URL(`../shared/img/social/${n}.svg`, import.meta.url)), n);
+  for (let i = 1; i <= 7; i++) assert.ok(existsSync(new URL(`../shared/img/net/n${i}.svg`, import.meta.url)), `n${i}`);
+  // icon URLs must not contain network names (blocked by uBlock/AdGuard social filters)
+  assert.doesNotMatch(read('shared/site.js') + read('foundation.jsx'), /img\/social\/|\/(instagram|youtube|x)\.svg/);
 });
 
 test('city ribbon: real list for screen readers, aria-hidden loop copy, no pause button, reduced motion static', () => {

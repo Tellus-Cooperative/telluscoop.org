@@ -67,7 +67,9 @@ const ShellSlot = ({ kind, theme }) => {
   return <div ref={ref} data-tellus={kind} data-lang="auto" data-section-theme={theme} />;
 };
 
-const channelIcon = (name) => <span className="hm-chan-ico" aria-hidden="true"><span style={{ WebkitMaskImage: `url(/shared/img/social/${name}.svg)`, maskImage: `url(/shared/img/social/${name}.svg)` }} /></span>;
+// Neutral file names: ad/tracker blockers (e.g. uBlock social lists) block icon URLs named after social networks
+const ICON_FILE = { x: 'n1', instagram: 'n2', linkedin: 'n3', youtube: 'n4', github: 'n5', discord: 'n6', whatsapp: 'n7' };
+const channelIcon = (name) => { const u = `url(/shared/img/net/${ICON_FILE[name]}.svg)`; return <span className="hm-chan-ico" aria-hidden="true"><span style={{ WebkitMaskImage: u, maskImage: u }} /></span>; };
 
 const FoundationSystem = () => {
   const { lang, t } = window.useLang();
