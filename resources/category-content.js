@@ -26,7 +26,7 @@ window.TELLUS_DEV_CATEGORY_CONTENT = {
     trySteps: {
       es: [
         "Conecta el repositorio y selecciona el preset del framework.",
-        "Añade variables de entorno y comprueba el deploy de preview.",
+        "Agrega variables de entorno y verifica el deploy de preview.",
         "Conecta un dominio, activa analítica y vigila la cuota gratuita.",
       ],
       en: [
@@ -36,7 +36,7 @@ window.TELLUS_DEV_CATEGORY_CONTENT = {
       ],
     },
     caveat2: {
-      es: "Comprueba políticas de suspensión, restricciones de uso comercial, ancho de banda y qué ocurre al agotar la cuota.",
+      es: "Verifica políticas de suspensión, restricciones de uso comercial, ancho de banda y qué ocurre al agotar la cuota.",
       en: "Check suspension policies, commercial-use restrictions, bandwidth limits and what happens once the quota runs out.",
     },
     idealFor: {
@@ -66,7 +66,7 @@ window.TELLUS_DEV_CATEGORY_CONTENT = {
     trySteps: {
       es: [
         "Crea la base gratuita más pequeña y copia sus credenciales.",
-        "Aplica un esquema y añade datos de prueba representativos.",
+        "Aplica un esquema y agrega datos de prueba representativos.",
         "Configura alertas y prueba la exportación antes de guardar datos importantes.",
       ],
       en: [
@@ -93,8 +93,8 @@ window.TELLUS_DEV_CATEGORY_CONTENT = {
     useCases: {
       es: [
         "Comparar prompts o modelos con un pequeño set de evaluación.",
-        "Añadir IA a un prototipo manteniendo el uso medible.",
-        "Trazar fallos, latencia y coste antes de un lanzamiento mayor.",
+        "Agregar IA a un prototipo manteniendo el uso medible.",
+        "Trazar fallos, latencia y costo antes de un lanzamiento mayor.",
       ],
       en: [
         "Compare prompts or models with a small evaluation set.",
@@ -127,12 +127,12 @@ window.TELLUS_DEV_CATEGORY_CONTENT = {
 
   auth: {
     shortVersionExtra: {
-      es: "Sustituye la infraestructura sensible de identidad por flujos, SDKs y gestión de usuarios mantenidos.",
+      es: "Reemplaza la infraestructura sensible de identidad por flujos, SDKs y gestión de usuarios mantenidos.",
       en: "It replaces sensitive identity infrastructure with maintained flows, SDKs and user management.",
     },
     useCases: {
       es: [
-        "Añadir login por email, social o passwordless a un MVP.",
+        "Agregar login por email, social o passwordless a un MVP.",
         "Modelar equipos y organizaciones en un producto multi-tenant.",
         "Proteger un dashboard interno sin construir infraestructura de identidad.",
       ],
@@ -142,7 +142,7 @@ window.TELLUS_DEV_CATEGORY_CONTENT = {
         "Protect an internal dashboard without building identity infrastructure.",
       ],
     },
-    tryTitle: { es: "Añade un login preparado para crecer", en: "Add a login that's ready to grow" },
+    tryTitle: { es: "Agrega un login preparado para crecer", en: "Add a login that's ready to grow" },
     trySteps: {
       es: [
         "Integra el SDK y activa solo los métodos de login necesarios.",
@@ -207,7 +207,7 @@ window.TELLUS_DEV_CATEGORY_CONTENT = {
 
   observability: {
     shortVersionExtra: {
-      es: "Da visibilidad sobre errores, uptime o rendimiento en producción sin tener que montar tu propio stack de monitorización.",
+      es: "Da visibilidad sobre errores, uptime o rendimiento en producción sin tener que armar tu propio stack de monitoreo.",
       en: "It gives visibility into errors, uptime or performance in production without having to build your own monitoring stack.",
     },
     useCases: {
@@ -222,7 +222,7 @@ window.TELLUS_DEV_CATEGORY_CONTENT = {
         "Publish a public status page for your project.",
       ],
     },
-    tryTitle: { es: "Monitoriza tu primer servicio", en: "Monitor your first service" },
+    tryTitle: { es: "Monitorea tu primer servicio", en: "Monitor your first service" },
     trySteps: {
       es: [
         "Agrega el SDK o el monitor de uptime a tu proyecto.",
@@ -356,7 +356,7 @@ window.TELLUS_DEV_CATEGORY_CONTENT = {
       ],
     },
     caveat2: {
-      es: "Las cuotas gratis suelen medirse en peticiones o ejecuciones/mes; vigila los picos, no solo el promedio.",
+      es: "Las cuotas gratis suelen medirse en solicitudes o ejecuciones/mes; vigila los picos, no solo el promedio.",
       en: "Free quotas are usually measured in requests or runs per month. Watch the spikes, not just the average.",
     },
     idealFor: {
@@ -396,7 +396,7 @@ window.TELLUS_DEV_CATEGORY_CONTENT = {
       ],
     },
     caveat2: {
-      es: "Los archivos o proyectos compartidos gratis suelen tener un tope bajo; contá cuántos vas a necesitar en simultáneo.",
+      es: "Los archivos o proyectos compartidos gratis suelen tener un tope bajo; cuenta cuántos vas a necesitar en simultáneo.",
       en: "Free shared files or projects usually have a low cap. Count how many you'll actually need at once.",
     },
     idealFor: {
@@ -447,12 +447,12 @@ window.TELLUS_DEV_CATEGORY_CONTENT = {
 
   collaboration: {
     shortVersionExtra: {
-      es: "Centraliza tareas, documentos o conversaciones de equipo en un solo lugar en vez de depender de planillas sueltas.",
+      es: "Centraliza tareas, documentos o conversaciones de equipo en un solo lugar en vez de depender de hojas de cálculo sueltas.",
       en: "It centralizes team tasks, docs or conversations in one place instead of relying on scattered spreadsheets.",
     },
     useCases: {
       es: [
-        "Organizar el backlog de un proyecto chico con un equipo reducido.",
+        "Organizar el backlog de un proyecto pequeño con un equipo reducido.",
         "Centralizar documentación y decisiones de producto.",
         "Coordinar una sesión de trabajo remota con el equipo.",
       ],
@@ -476,18 +476,18 @@ window.TELLUS_DEV_CATEGORY_CONTENT = {
       ],
     },
     caveat2: {
-      es: "Los planes gratis suelen limitar historial, integraciones o tableros; medí eso contra el uso real del equipo.",
+      es: "Los planes gratis suelen limitar historial, integraciones o tableros; mide eso contra el uso real del equipo.",
       en: "Free plans usually cap history, integrations or boards. Measure that against your team's real usage.",
     },
     idealFor: {
-      es: "Tareas, documentos y comunicación para equipos chicos",
+      es: "Tareas, documentos y comunicación para equipos pequeños",
       en: "Tasks, docs and communication for small teams",
     },
   },
 
   cms: {
     shortVersionExtra: {
-      es: "Separa el contenido del código para que editores y developers puedan trabajar en paralelo sin pisarse.",
+      es: "Separa el contenido del código para que editores y developers puedan trabajar en paralelo sin interferir entre sí.",
       en: "It separates content from code so editors and developers can work in parallel without stepping on each other.",
     },
     useCases: {
@@ -516,7 +516,7 @@ window.TELLUS_DEV_CATEGORY_CONTENT = {
       ],
     },
     caveat2: {
-      es: "Los límites de peticiones API y usuarios editoriales gratis suelen ser el primer techo real; medilos por separado.",
+      es: "Los límites de solicitudes API y usuarios editoriales gratis suelen ser el primer techo real; mídelos por separado.",
       en: "Free API request limits and editorial seats are usually the first real ceiling. Measure them separately.",
     },
     idealFor: {
@@ -527,13 +527,13 @@ window.TELLUS_DEV_CATEGORY_CONTENT = {
 
   media: {
     shortVersionExtra: {
-      es: "Se encarga de subir, transformar y entregar imágenes o vídeo por CDN sin montar tu propia infraestructura de media.",
+      es: "Se encarga de subir, transformar y entregar imágenes o video por CDN sin armar tu propia infraestructura de media.",
       en: "It handles uploading, transforming and delivering images or video through a CDN without you building your own media infrastructure.",
     },
     useCases: {
       es: [
         "Subir y optimizar imágenes de usuario en una app.",
-        "Servir vídeo o imágenes con buen rendimiento desde un CDN.",
+        "Servir video o imágenes con buen rendimiento desde un CDN.",
         "Redimensionar o recortar imágenes automáticamente al vuelo.",
       ],
       en: [
@@ -546,7 +546,7 @@ window.TELLUS_DEV_CATEGORY_CONTENT = {
     trySteps: {
       es: [
         "Sube un archivo de prueba con el widget o la API.",
-        "Aplica una transformación básica (resize, formato) y comprueba la entrega por CDN.",
+        "Aplica una transformación básica (resize, formato) y verifica la entrega por CDN.",
         "Mide el consumo de storage y ancho de banda antes de integrarlo a producción.",
       ],
       en: [
@@ -560,7 +560,7 @@ window.TELLUS_DEV_CATEGORY_CONTENT = {
       en: "Storage, transformations and bandwidth almost never share the same free quota. Check all three separately.",
     },
     idealFor: {
-      es: "Subida, transformación y entrega de imagen o vídeo",
+      es: "Subida, transformación y entrega de imagen o video",
       en: "Upload, transformation and delivery of images or video",
     },
   },

@@ -41,7 +41,7 @@
       canvas.hidden = true; empty.hidden = false; enable(false); say('');
       return;
     }
-    if (!window.QRCodeStyling) { say('No se pudo cargar el generador. Recargue la página.'); return; }
+    if (!window.QRCodeStyling) { say('No se pudo cargar el generador. Recarga la página.'); return; }
     if (!qr) { qr = new window.QRCodeStyling(options(data)); canvas.innerHTML = ''; qr.append(canvas); }
     else qr.update(options(data));
     canvas.hidden = false; empty.hidden = true; enable(true); say('');

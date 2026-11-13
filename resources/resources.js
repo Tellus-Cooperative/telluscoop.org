@@ -6,19 +6,19 @@
       title: 'Tellus Resources · La parte gratis de internet',
       eyebrow: 'Directorio para developers',
       h1: 'La parte <em>gratis</em> de internet',
-      lede: 'Construí más. Gastá menos. Catálogo curado por Tellus Cooperative de productos con planes gratuitos genuinamente útiles para developers, makers y equipos pequeños.',
+      lede: 'Construye más. Gasta menos. Catálogo curado por Tellus Cooperative de productos con planes gratuitos genuinamente útiles para developers, makers y equipos pequeños.',
       statTools: 'Recursos', statCats: 'Categorías', statRec: 'Recomendados', statNoCard: 'Sin tarjeta',
       search: 'Buscar por nombre, tag o categoría…', all: 'Todos los recursos', onlyRec: 'Solo recomendados', recommended: 'Recomendado',
-      one: 'resultado', many: 'resultados', empty: 'No encontramos herramientas con esa búsqueda. Probá con otro término.',
+      one: 'resultado', many: 'resultados', empty: 'No encontramos herramientas con esa búsqueda. Prueba con otro término.',
       side: 'Explora por categoría',
-      suggest: '¿Conocés una herramienta con un plan gratuito genuino que deberíamos sumar? Contanos y la evaluamos.', suggestLink: 'Sugerir herramienta',
+      suggest: '¿Conoces una herramienta con un plan gratuito genuino que deberíamos agregar? Cuéntanos y la evaluamos.', suggestLink: 'Sugerir herramienta',
       allCats: function (n) { return 'Las ' + n + ' categorías'; }, fewerCats: 'Menos categorías',
       page: 'Página', pagination: 'Paginación',
       faqEyebrow: 'Preguntas frecuentes', faqTitle: 'Antes de que preguntes',
       faq: [
         ['¿Todas estas herramientas son completamente gratis?', 'Todos los productos ofrecen una capa gratuita útil, aunque puede tener límites de uso, almacenamiento o equipo. No es lo mismo que un producto gratuito sin límites.'],
         ['¿Cómo elegimos qué aparece en el listado?', 'Priorizamos herramientas fiables con un plan gratuito que sea realmente útil para construir, aprender o lanzar un proyecto real.'],
-        ['¿Puedo usar estos servicios en producción?', 'A menudo sí, especialmente en aplicaciones pequeñas. Comprobá límites, soporte, ubicación de datos y costes de ampliación antes de depender de un plan gratuito.'],
+        ['¿Puedo usar estos servicios en producción?', 'A menudo sí, especialmente en aplicaciones pequeñas. Revisa los límites, el soporte, la ubicación de los datos y los costos de ampliación antes de depender de un plan gratuito.'],
         ['¿Cada cuánto se revisa el directorio?', 'Revisamos el catálogo regularmente, agregamos descubrimientos útiles y retiramos productos cuya oferta gratuita deja de ser relevante.'],
         ['¿Por qué está en dos idiomas?', 'Las buenas herramientas para developers deberían ser fáciles de descubrir en inglés y en español. Este directorio es un aporte de Tellus Cooperative a la comunidad de builders.']
       ]

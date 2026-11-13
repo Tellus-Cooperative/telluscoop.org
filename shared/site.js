@@ -87,11 +87,11 @@
       socialOn: 'Tellus en ', cities: 'Capítulos en Latinoamérica',
       ctaH: '¿Listo para construir con nosotros?', ctaSub: 'La membresía es gratis, abierta y toma 90 segundos.', ctaJoin: 'Únete a la cooperativa',
       ctaWa: 'O únete a nuestra comunidad de WhatsApp, más de 300 miembros →', ctaWaShort: 'O únete a WhatsApp · 300+ miembros →',
-      mTitle: 'Unite a Tellus.', mSub: 'Guías semanales, eventos y recursos para el emprendimiento blockchain, gratis.',
+      mTitle: 'Únete a Tellus.', mSub: 'Guías semanales, eventos y recursos para el emprendimiento blockchain, gratis.',
       mEmail: 'Email', mPlaceholder: 'tu@email.com', mSubscribe: 'Suscribirme', mAlso: 'también únete a la comunidad',
-      mWa: 'WhatsApp · 300+ miembros', mDiscord: 'Comunidad Discord', mOkTitle: 'Revisá tu bandeja de entrada.',
+      mWa: 'WhatsApp · 300+ miembros', mDiscord: 'Comunidad Discord', mOkTitle: 'Revisa tu bandeja de entrada.',
       mOkSub: 'Confirma tu suscripción en el correo que te acabamos de enviar. Luego únete a la comunidad:', mDone: 'Listo', mClose: 'Cerrar',
-      mErr: 'Error: no se pudo suscribir. Visitá blog.telluscoop.com/subscribe para registrarte directamente.'
+      mErr: 'Error: no se pudo suscribir. Visita blog.telluscoop.com/subscribe para registrarte directamente.'
     },
     pt: { // TODO(§15 Q2): only the strings that already existed in PT; the rest fall back to EN.
       join: 'Participar', joinFull: 'Entrar na cooperativa', programs: 'Programas', resources: 'Recursos', community: 'Comunidade',

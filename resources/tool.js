@@ -10,13 +10,13 @@
       freeFlow: function (d) { return 'Su oferta gratuita actual permite probar un flujo real: ' + d; },
       useEyebrow: 'Cuándo usarlo', useH: 'Casos de uso prácticos', tryEyebrow: 'Por dónde empezar',
       cavEyebrow: 'Antes de elegirlo', cavH: 'Qué revisar antes de elegirlo',
-      cavNoCard: 'Puedes empezar sin añadir tarjeta, reduciendo el riesgo de cargos accidentales por exceso.',
+      cavNoCard: 'Puedes empezar sin agregar tarjeta, reduciendo el riesgo de cargos accidentales por exceso.',
       cavCard: 'Hace falta tarjeta para desbloquear toda la cuota gratuita. Configura límites de gasto antes de enviar tráfico real.',
-      planH: 'Plan gratuito de un vistazo', included: 'Incluido sin coste', bestFor: 'Ideal para', category: 'Categoría', reviewed: 'Última revisión', tags: 'Tags',
-      pricing: 'Comprobar precios actuales', noCard: 'Sin tarjeta', card: 'Tarjeta para la cuota completa',
-      keep: 'Seguí explorando', alts: function (n) { return 'Alternativas a ' + n; }, seeCat: 'Ver toda la categoría',
-      recommended: 'Recomendado', locale: 'es-CL',
-      nfH: 'No encontramos ese recurso', nfP: 'El recurso que buscás no está en el catálogo o el enlace es incorrecto.', nfLink: 'Volver al directorio'
+      planH: 'Plan gratuito de un vistazo', included: 'Incluido sin costo', bestFor: 'Ideal para', category: 'Categoría', reviewed: 'Última revisión', tags: 'Tags',
+      pricing: 'Revisar precios actuales', noCard: 'Sin tarjeta', card: 'Tarjeta para la cuota completa',
+      keep: 'Sigue explorando', alts: function (n) { return 'Alternativas a ' + n; }, seeCat: 'Ver toda la categoría',
+      recommended: 'Recomendado', locale: 'es-419',
+      nfH: 'No encontramos ese recurso', nfP: 'El recurso que buscas no está en el catálogo o el enlace es incorrecto.', nfLink: 'Volver al directorio'
     },
     en: {
       title: function (n) { return n + ' · Tellus Resources'; },
