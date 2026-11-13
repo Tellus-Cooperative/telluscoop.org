@@ -6,11 +6,11 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ```bash
 npm run dev    # serve the site at http://localhost:8080 (static; serve.json mirrors vercel.json rewrites)
-npm run build  # esbuild: home-main.jsx + foundation.jsx → dist/home.js (output is committed)
+npm run build:home  # esbuild: home-main.jsx + foundation.jsx → dist/home.js (output is committed)
 npm test       # node --test tests/*.test.mjs
 ```
 
-No TypeScript or lint step. The site deploys to Vercel (telluscoop.org) as static files plus serverless functions in `api/`. Vercel runs no build: always run `npm run build` and commit `dist/home.js` after touching `foundation.jsx`, `home-main.jsx` or `i18n.js`.
+No TypeScript or lint step. The site deploys to Vercel (telluscoop.org) as static files plus serverless functions in `api/`. Vercel runs no build (do NOT add a `build` script — Vercel would run it and then fail looking for a `public/` output dir): always run `npm run build:home` and commit `dist/home.js` after touching `foundation.jsx`, `home-main.jsx` or `i18n.js`.
 
 ## The site
 

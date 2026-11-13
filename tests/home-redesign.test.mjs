@@ -16,10 +16,10 @@ test('home ships no in-browser Babel, Tweaks panel or editmode block', () => {
 
 test('built home bundle exists, is non-trivial and is what index.html loads', () => {
   const p = new URL('../dist/home.js', import.meta.url);
-  assert.ok(existsSync(p), 'run `npm run build` and commit dist/home.js');
+  assert.ok(existsSync(p), 'run `npm run build:home` and commit dist/home.js');
   assert.ok(statSync(p).size > 5000);
   assert.match(read('index.html'), /<script src="\/dist\/home\.js/);
-  assert.match(read('package.json'), /"build":\s*"esbuild/);
+  assert.match(read('package.json'), /"build:home":\s*"esbuild/);
 });
 
 test('no JetBrains Mono anywhere in the shared shell or home', () => {
@@ -140,4 +140,9 @@ test('shell CSS never sets a font size under 14px', () => {
 
 test('hub and its OG image are untouched assets', () => {
   assert.ok(existsSync(new URL('../uploads/OPENGRAPH.jpg', import.meta.url)));
+});
+
+test('package.json has no plain "build" script (Vercel would run it and require a public/ output dir)', () => {
+  const pkg = JSON.parse(read('package.json'));
+  assert.equal(pkg.scripts.build, undefined);
 });
